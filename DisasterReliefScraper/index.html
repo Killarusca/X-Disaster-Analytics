@@ -4,37 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>X-Like Disaster Analytics</title>
-
-  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- Custom CSS -->
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container">
+      <a class="navbar-brand" href="#">X-Like Disaster Analytics</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="About.html">About</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
   <div class="container-fluid">
     <div class="row justify-content-center">
-      <main class="col-md-8 col-lg-6 px-md-4 py-4">
+      <main class="col-12 col-md-10 col-lg-8 px-md-4 py-4">
         <h2 class="text-center mb-4">Natural Disasters in Luzon (2022)</h2>
 
         <!-- Typhoon Karding Media Coverage -->
         <div class="card mb-4 p-3">
-          <h5>Media & Influencer Coverage - Typhoon Karding</h5>
+          <h5 class="text-center">Media & Influencer Coverage - Typhoon Karding</h5>
           <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 mb-3 mb-md-0">
               <canvas id="kardingAbsCbnChart"></canvas>
               <p class="text-center small mt-2">ABS-CBN coverage and influencer mentions for Typhoon Karding</p>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6">
               <canvas id="kardingGmaChart"></canvas>
               <p class="text-center small mt-2">GMA coverage and influencer mentions for Typhoon Karding</p>
             </div>
           </div>
           <hr class="mt-4">
-          <!-- Chart Description Example -->
           <div class="mt-3">
             <p class="fw-semibold mb-1">Chart Description:</p>
             <p class="mb-0 text-secondary small">
@@ -50,75 +63,72 @@
 
         <!-- Community Support -->
         <div class="card mb-4 p-3">
-          <h5>Community Support & Volunteerism</h5>
-          <p class="mb-1">Typhoon Karding</p>
-          <canvas id="kardingSupportChart"></canvas>
-          <p class="text-center small mt-2">Community support and volunteer activities for Typhoon Karding</p>
-          <p class="mt-3 mb-1">Luzon Earthquake</p>
-          <canvas id="earthquakeSupportChart"></canvas>
-          <p class="text-center small mt-2">Community support and volunteer activities for Luzon Earthquake</p>
-            <hr class="mt-4">
-            <!-- Chart Description Example -->
-            <div class="mt-3">
-                <p class="fw-semibold mb-1">Chart Description:</p>
-                <p class="mb-0 text-secondary small">
-                    Lorem ipsum dolor sit amet. Et obcaecati quidem et dolores placeat qui enim nesciunt ut ipsam unde est vero quia quo nihil Quis. 
-                    Aut nisi minus sed quae earum et possimus corporis non quibusdam dolore qui itaque commodi in saepe adipisci. <br /><br />
-                    Sed voluptates libero qui odit sint aut illum porro quo commodi expedita 33 rerum numquam. Ut dolorum officiis qui quos optio 
-                    eos unde natus sit suscipit reiciendis est minima dolor et illo modi aut nihil expedita. Eum atque quia vel accusantium sunt qui 
-                    nemo quaerat. <br /><br />
-                    Qui voluptatibus consequatur et doloribus voluptates et autem voluptatem et doloremque quia. <br />
-                </p>
-                </div>
-            </div>
+          <h5 class="text-center">Community Support & Volunteerism</h5>
+          <div class="mb-4">
+            <p class="mb-1 text-center">Typhoon Karding</p>
+            <canvas id="kardingSupportChart"></canvas>
+            <p class="text-center small mt-2">Community support and volunteer activities for Typhoon Karding</p>
+          </div>
+          <div class="mb-4">
+            <p class="mt-3 mb-1 text-center">Luzon Earthquake</p>
+            <canvas id="earthquakeSupportChart"></canvas>
+            <p class="text-center small mt-2">Community support and volunteer activities for Luzon Earthquake</p>
+          </div>
+          <hr class="mt-4">
+          <div class="mt-3">
+            <p class="fw-semibold mb-1">Chart Description:</p>
+            <p class="mb-0 text-secondary small">
+                Lorem ipsum dolor sit amet. Et obcaecati quidem et dolores placeat qui enim nesciunt ut ipsam unde est vero quia quo nihil Quis. 
+                Aut nisi minus sed quae earum et possimus corporis non quibusdam dolore qui itaque commodi in saepe adipisci. <br /><br />
+                Sed voluptates libero qui odit sint aut illum porro quo commodi expedita 33 rerum numquam. Ut dolorum officiis qui quos optio 
+                eos unde natus sit suscipit reiciendis est minima dolor et illo modi aut nihil expedita. Eum atque quia vel accusantium sunt qui 
+                nemo quaerat. <br /><br />
+                Qui voluptatibus consequatur et doloribus voluptates et autem voluptatem et doloremque quia. <br />
+            </p>
+          </div>
         </div>
-        
-        
 
         <!-- Infrastructure -->
         <div class="card mb-4 p-3">
-          <h5>Infrastructure & Damage Reports - Typhoon Karding</h5>
+          <h5 class="text-center">Infrastructure & Damage Reports - Typhoon Karding</h5>
           <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 mb-3 mb-md-0">
               <canvas id="infraAbsCbnChart"></canvas>
               <p class="text-center small mt-2">ABS-CBN infrastructure and damage reports for Typhoon Karding</p>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6">
               <canvas id="infraGmaChart"></canvas>
               <p class="text-center small mt-2">GMA infrastructure and damage reports for Typhoon Karding</p>
             </div>
           </div>
-            <hr class="mt-4">
-            <!-- Chart Description Example -->
-            <div class="mt-3">
-                <p class="fw-semibold mb-1">Chart Description:</p>
-                <p class="mb-0 text-secondary small">
-                    Lorem ipsum dolor sit amet. Et obcaecati quidem et dolores placeat qui enim nesciunt ut ipsam unde est vero quia quo nihil Quis. 
-                    Aut nisi minus sed quae earum et possimus corporis non quibusdam dolore qui itaque commodi in saepe adipisci. <br /><br />
-                    Sed voluptates libero qui odit sint aut illum porro quo commodi expedita 33 rerum numquam. Ut dolorum officiis qui quos optio 
-                    eos unde natus sit suscipit reiciendis est minima dolor et illo modi aut nihil expedita. Eum atque quia vel accusantium sunt qui 
-                    nemo quaerat. <br /><br />
-                    Qui voluptatibus consequatur et doloribus voluptates et autem voluptatem et doloremque quia. <br />
-                </p>
-                </div>
-            </div>
+          <hr class="mt-4">
+          <div class="mt-3">
+            <p class="fw-semibold mb-1">Chart Description:</p>
+            <p class="mb-0 text-secondary small">
+                Lorem ipsum dolor sit amet. Et obcaecati quidem et dolores placeat qui enim nesciunt ut ipsam unde est vero quia quo nihil Quis. 
+                Aut nisi minus sed quae earum et possimus corporis non quibusdam dolore qui itaque commodi in saepe adipisci. <br /><br />
+                Sed voluptates libero qui odit sint aut illum porro quo commodi expedita 33 rerum numquam. Ut dolorum officiis qui quos optio 
+                eos unde natus sit suscipit reiciendis est minima dolor et illo modi aut nihil expedita. Eum atque quia vel accusantium sunt qui 
+                nemo quaerat. <br /><br />
+                Qui voluptatibus consequatur et doloribus voluptates et autem voluptatem et doloremque quia. <br />
+            </p>
+          </div>
         </div>
 
         <!-- Emergency Relief -->
         <div class="card mb-4 p-3">
-          <h5>Emergency Response - Luzon Earthquake</h5>
+          <h5 class="text-center">Emergency Response - Luzon Earthquake</h5>
           <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 mb-3 mb-md-0">
               <canvas id="earthquakeRelief1"></canvas>
               <p class="text-center small mt-2">Relief operations by government agencies</p>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6">
               <canvas id="earthquakeRelief2"></canvas>
               <p class="text-center small mt-2">Relief operations by NGOs and volunteers</p>
             </div>
           </div>
           <hr class="mt-4">
-          <!-- Chart Description Example -->
           <div class="mt-3">
             <p class="fw-semibold mb-1">Chart Description:</p>
             <p class="mb-0 text-secondary small">
@@ -131,23 +141,21 @@
             </p>
           </div>
         </div>
-        </div>
 
         <!-- Preparedness -->
         <div class="card mb-4 p-3">
-          <h5>Disaster Preparedness - Typhoon Karding</h5>
+          <h5 class="text-center">Disaster Preparedness - Typhoon Karding</h5>
           <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 mb-3 mb-md-0">
               <canvas id="preparedness1"></canvas>
               <p class="text-center small mt-2">Preparedness measures by local government</p>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6">
               <canvas id="preparedness2"></canvas>
               <p class="text-center small mt-2">Preparedness measures by communities</p>
             </div>
           </div>
           <hr class="mt-4">
-          <!-- Chart Description Example -->
           <div class="mt-3">
             <p class="fw-semibold mb-1">Chart Description:</p>
             <p class="mb-0 text-secondary small">
@@ -159,16 +167,15 @@
                 Qui voluptatibus consequatur et doloribus voluptates et autem voluptatem et doloremque quia. <br />
             </p>
           </div>
-        </div>
         </div>
       </main>
     </div>
   </div>
 
   <!-- Summary Paragraph -->
-  <div class="container pb-4">
+  <div class="container-fluid pb-4">
     <div class="row justify-content-center">
-      <div class="col-md-8 col-lg-6">
+      <div class="col-12 col-md-10 col-lg-8 px-md-4">
         <div class="card bg-light mt-3">
           <div class="card-body">
             <p class="mb-0">
