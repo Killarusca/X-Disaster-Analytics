@@ -40,7 +40,7 @@ async def main():
     )
     query_abscbn_henryph = 'ABSCBN #HenryPH'
 
-    query_gma_henryph = 'GMA #HenryPH'
+    query_gma_henryph = 'GMA Network #HenryPH'
 
 
     government_keywords = [

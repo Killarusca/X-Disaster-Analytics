@@ -123,6 +123,12 @@ const renderPieCharts = async () => {
       fetch("jsonData/typhoonHenry_abscbn.json"),
     ]);
 
+    if (!gmaRes.ok || !abscbnRes.ok) {
+      throw new Error(
+        `HTTP error! GMA status: ${gmaRes.status}, ABS-CBN status: ${abscbnRes.status}`
+      );
+    }
+
     const gmaData = await gmaRes.json();
     const abscbnData = await abscbnRes.json();
 
@@ -138,8 +144,87 @@ const renderPieCharts = async () => {
       abscbnTotals,
       "Typhoon Henry - ABS-CBN Engagement"
     );
+
+    // Initialize DataTables for Henry Infrastructure Data
+    const tableConfigHenryInfra = {
+      pageLength: 5,
+      lengthMenu: [5, 10, 25, 50],
+      responsive: true,
+      language: {
+        paginate: {
+          first: "«",
+          previous: "‹",
+          next: "›",
+          last: "»",
+        },
+        search: "Search:",
+        lengthMenu: "Show _MENU_ entries",
+      },
+      dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
+      columnDefs: [
+        { targets: 0, title: "User", width: "15%" },
+        { targets: 1, title: "Tweet Content", width: "40%" },
+        { targets: 2, title: "Date", width: "15%" },
+        { targets: 3, title: "Likes", width: "10%" },
+        { targets: 4, title: "Replies", width: "10%" },
+        { targets: 5, title: "Reposts", width: "10%" },
+      ],
+    };
+
+    // Populate and initialize Henry ABS-CBN Infrastructure table
+    if ($.fn.DataTable.isDataTable("#henryAbsCbnInfraTable")) {
+      $("#henryAbsCbnInfraTable").DataTable().destroy();
+    }
+    const henryAbsCbnInfraTable = $("#henryAbsCbnInfraTable").DataTable(
+      tableConfigHenryInfra
+    );
+    if (abscbnData && abscbnData.length > 0) {
+      abscbnData.forEach((tweet) => {
+        henryAbsCbnInfraTable.row.add([
+          tweet.user_name || "N/A",
+          tweet.text || "N/A",
+          tweet.created_at
+            ? new Date(tweet.created_at).toLocaleString()
+            : "N/A",
+          tweet.likes_count || 0,
+          tweet.replies_count || 0,
+          tweet.reposts_count || 0,
+        ]);
+      });
+      henryAbsCbnInfraTable.draw();
+    } else {
+      henryAbsCbnInfraTable.clear().draw();
+    }
+
+    // Populate and initialize Henry GMA Infrastructure table
+    if ($.fn.DataTable.isDataTable("#henryGmaInfraTable")) {
+      $("#henryGmaInfraTable").DataTable().destroy();
+    }
+    const henryGmaInfraTable = $("#henryGmaInfraTable").DataTable(
+      tableConfigHenryInfra
+    );
+    if (gmaData && gmaData.length > 0) {
+      gmaData.forEach((tweet) => {
+        henryGmaInfraTable.row.add([
+          tweet.user_name || "N/A",
+          tweet.text || "N/A",
+          tweet.created_at
+            ? new Date(tweet.created_at).toLocaleString()
+            : "N/A",
+          tweet.likes_count || 0,
+          tweet.replies_count || 0,
+          tweet.reposts_count || 0,
+        ]);
+      });
+      henryGmaInfraTable.draw();
+    } else {
+      henryGmaInfraTable.clear().draw();
+    }
   } catch (error) {
-    console.error("Error loading JSON data or rendering charts:", error);
+    console.error(
+      "Error loading Henry infrastructure JSON data or rendering charts/tables:",
+      error
+    );
   }
 };
 
@@ -498,6 +583,88 @@ async function loadHenryPreparednessCharts() {
     console.error("Error loading Typhoon Henry preparedness charts:", error);
   }
 }
+
+const tableConfig = {
+  destroy: true, // allow reinitialization
+  responsive: true,
+  paging: true,
+  searching: true,
+  // add your other DataTable options here
+};
+
+async function loadTable(jsonPath, tableId) {
+  try {
+    const response = await fetch(jsonPath);
+    const data = await response.json();
+
+    // Destroy existing DataTable if exists
+    if ($.fn.DataTable.isDataTable(`#${tableId}`)) {
+      $(`#${tableId}`).DataTable().clear().destroy();
+    }
+
+    const dataTable = $(`#${tableId}`).DataTable(tableConfig);
+    dataTable.clear();
+
+    data.forEach((tweet, index) => {
+      dataTable.row.add([
+        index + 1,
+        tweet.text,
+        new Date(tweet.created_at).toLocaleString(),
+        tweet.likes_count,
+        tweet.replies_count,
+        tweet.reposts_count,
+      ]);
+    });
+
+    dataTable.draw();
+  } catch (error) {
+    console.error("Error loading data:", error);
+  }
+}
+
+$(document).ready(function () {
+  let communityLoaded = false;
+  let govLoaded = false;
+
+  // Load Community Data when accordion expands
+  $("#collapseCommunity").on("shown.bs.collapse", () => {
+    if (!communityLoaded) {
+      loadTable("jsonData/typhoonHenry_community.json", "communityTable");
+      communityLoaded = true;
+    }
+  });
+
+  // Load Government Data when accordion expands
+  $("#collapseGov").on("shown.bs.collapse", () => {
+    if (!govLoaded) {
+      loadTable("jsonData/typhoonHenry_gov.json", "govTable");
+      govLoaded = true;
+    }
+  });
+});
+
+$(document).ready(function () {
+  let abscbnLoaded = false;
+  let gmaLoaded = false;
+
+  $("#collapseAbscbn").on("shown.bs.collapse", () => {
+    if (!abscbnLoaded) {
+      loadTable(
+        "jsonData/typhoonHenry_abscbn.json",
+        "abscbnTable",
+        "abscbnContainer"
+      );
+      abscbnLoaded = true;
+    }
+  });
+
+  $("#collapseGma").on("shown.bs.collapse", () => {
+    if (!gmaLoaded) {
+      loadTable("jsonData/typhoonHenry_gma.json", "gmaTable", "gmaContainer");
+      gmaLoaded = true;
+    }
+  });
+});
 
 document.addEventListener("DOMContentLoaded", loadCarinaEmergencyCharts);
 document.addEventListener("DOMContentLoaded", loadHenryPreparednessCharts); // Added call for Henry charts
