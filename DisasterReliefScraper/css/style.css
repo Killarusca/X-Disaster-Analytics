@@ -192,3 +192,46 @@ h2, h5 {
     border: none;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
+
+/* Table column widths */
+.dataTables_wrapper table td:nth-child(1) {  /* Tweet # column */
+    width: 5% !important;
+    min-width: 60px;
+    text-align: center;
+}
+
+.dataTables_wrapper table td:nth-child(2) {  /* Content column */
+    width: 45% !important;
+    min-width: 300px;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.dataTables_wrapper table td:nth-child(n+3) {  /* Other columns */
+    width: 12.5% !important;
+    min-width: 100px;
+    text-align: center;
+}
+
+/* Remove conflicting styles */
+.dataTables_wrapper table td:first-child {
+    max-width: unset;
+}
+
+.dataTables_wrapper table td:not(:first-child) {
+    width: unset;
+}
+
+/* Navigation styling */
+.navbar-nav .nav-link {
+    font-weight: 400;
+    transition: color 0.2s ease;
+}
+
+.navbar-nav .nav-link.active {
+    font-weight: 600;
+}
+
+.navbar-nav .nav-link:hover {
+    color: black !important;
+}

@@ -43,11 +43,15 @@
           <div class="card-body p-4">
             <h3 class="mb-4 fw-bold text-primary">Purpose</h3>
             <p class="lead mb-0">
-                <i class="fa-brands fa-x-twitter me-1 mb-1"></i> Disaster Analytics aims to analyze the social and media dynamics on social media platforms during disaster events. Our project provides comprehensive insights into how information spreads, how communities engage, and how media outlets cover natural disasters, helping to better understand public response and information dissemination patterns.
-            <br />
-            <br />
-            This is our final project for the Social Media Dynamics (SMD) course, to be submitted to Prof. JAN MARVIN GOH on May 27, 2025.
+              <i class="fa-brands fa-x-twitter me-1 mb-1"></i> Disaster Analytics aims to analyze the social and media dynamics on social media platforms during disaster events. Our project provides comprehensive insights into how information spreads, how communities engage, and how media outlets cover natural disasters, helping to better understand public response and information dissemination patterns.
             </p>
+
+            <div class="alert alert-info mt-4">
+              <small>
+                <i class="fas fa-info-circle me-2"></i>
+                This is our final project for the Social Media Dynamics (SMD) course, to be submitted to Prof. JAN MARVIN GOH on May 27, 2025.
+              </small>
+            </div>
           </div>
         </div>
 
@@ -88,6 +92,22 @@
                   </ul>
                 </div>
               </div>
+            </div>
+            <div class="mt-4">
+              <h5 class="fw-semibold mb-3">Technical Implementation</h5>
+              <p class="text-secondary">
+                The project utilizes Python's Twikit library to fetch real-time data from X (formerly Twitter). Our scraper:
+              </p>
+              <ul class="text-secondary">
+                <li>Authenticates with X using configured credentials</li>
+                <li>Searches for posts related to Natural Disasters in Luzon(2022)</li>
+                <li>Extracts engagement metrics (likes, reposts, replies), post content, and the amount of posts</li>
+                <li>Processes and filters the data to ensure relevance</li>
+                <li>Dumps the structured data into JSON files</li>
+              </ul>
+              <p class="text-secondary">
+                The web interface then loads these JSON files using JavaScript to create interactive visualizations and data tables, providing a comprehensive view of how different media outlets covered the disaster event and how the public engaged with their coverage.
+              </p>
             </div>
           </div>
         </div>
