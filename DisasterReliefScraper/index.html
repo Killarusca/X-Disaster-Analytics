@@ -60,7 +60,34 @@
               </div>
             </div>
             <hr class="my-4">
-            <div class="mt-5">
+            <div class="mt-3">
+              <p class="fw-semibold mb-1">Chart Description:</p>
+              <p class="mb-0 text-secondary small">
+                The data from both ABS-CBN and GMA during Typhoon Karding underscores the critical role of media coverage on social media in shaping public awareness, emotional response, and real-time action during natural disasters. The contrast in engagement levels between the two networks—ABS-CBN's tweets averaging hundreds to thousands of reposts and likes, versus GMA’s typically lower double-digit figures—reveals how content framing, timing, and platform resonance impact audience behavior.
+                ABS-CBN’s tweets, particularly those providing urgent warnings—such as signal advisories and expected impact zones—and emotional appeals like prayers or community aid, saw substantial amplification through reposts and high like counts. For instance, one tweet warning about “catastrophic effects” received nearly 3,000 likes and 1,388 reposts, indicating a strong public impulse to share actionable and emotional content. These high-engagement posts demonstrate that effective disaster communication on social media must be immediate, emotionally resonant, and easily shareable.
+                Meanwhile, GMA’s content—although similarly informative—generally garnered less engagement. Their updates focused more on formal announcements and institutional efforts, which, while important, appeared less emotionally engaging or urgent in tone. Posts highlighting government coordination or late-stage weather developments attracted minimal interaction. This difference suggests that audiences on platforms like Twitter are more responsive to content that feels directly relevant to personal safety or community welfare, rather than institutional updates.
+                From a broader perspective, this analysis highlights the vital importance of media organizations on social media as both information disseminators and emotional anchors during crises. High engagement can help ensure that critical updates reach wider audiences quickly, enabling faster preparation, response, and even recovery. Social media dynamics—especially the speed and scale of user amplification—can turn a single tweet into a life-saving alert or a rallying point for aid.
+                In sum, the effectiveness of media coverage in disasters is deeply tied to how well it leverages social media's strengths: timeliness, emotional engagement, clarity, and shareability. The ABS-CBN and GMA data not only reflect differing levels of engagement but also reveal how media organizations must continuously adapt their digital strategies to ensure that life-saving information truly reaches—and moves—the public.
+              </p>
+
+              <div class="mt-4">
+                  <h6 class="fw-semibold mb-2">
+                    <i class="fas fa-headphones me-2"></i>Listen to Analysis
+                  </h6>
+                  <div class="audio-player p-3 bg-light rounded">
+                    <audio controls class="w-100">
+                      <source src="audios/Media Impact During Typhoon Karding.mp3" type="audio/mpeg">
+                      Your browser does not support the audio element.
+                    </audio>
+                    <p class="text-muted small mt-2 mb-0">
+                      <i class="fas fa-info-circle me-1"></i>
+                      Audio summary of the Chart Description for Typhoon Karding media coverage
+                    </p>
+                  </div>
+                </div>
+            </div>
+            <hr />
+            <div class="mt-4">
               <h5 class="card-title mb-4">Raw Data</h5>
               <div class="accordion" id="rawDataAccordion">
                 <!-- ABS-CBN Data -->
@@ -76,6 +103,7 @@
                         <table id="absCbnTable" class="table table-hover">
                             <thead class="table-light">
                                 <tr>
+                                    <th>Tweet #</th>
                                     <th>Content</th>
                                     <th>Created At</th>
                                     <th>Likes</th>
@@ -90,11 +118,39 @@
                     </div>
                   </div>
                 </div>
-                
+              </div>
+
+              <div class="mt-3 ms-1">
+                <h6 class="fw-semibold mb-2">ABS-CBN Engagement Data Analysis</h6>
+                <p class="text-secondary small">
+                  Based on the numbers in the dataset, the engagement metrics—reposts, likes, and replies—reveal how users responded to different types of tweets during Super Typhoon Karding. The tweet with the highest engagement overall is Tweet 2, which warned of the typhoon’s catastrophic effects and called for immediate preparation. It received 1,388 reposts and 2,990 likes, indicating that users saw it as highly urgent and important to share. Similarly, Tweet 0, a prayer post, had 731 reposts and 2,651 likes, showing strong emotional resonance and a shared sense of hope or solidarity. Tweets that reported significant updates, such as signal number changes (Tweets 6 and 5), also had high reposts (493 and 272 respectively) and hundreds to over a thousand likes, reflecting the audience’s desire to spread critical information.
+                  Replies, though generally lower, spiked in Tweet 8 with 84 replies, where the focus shifted to the lack of post-typhoon aid in an affected community. This suggests that users were more likely to respond or engage in discussion when a tweet addressed a perceived injustice or unmet need. Other tweets had minimal replies, ranging from 2 to 21, suggesting that news-style bulletins are typically not conversational but rather informative. Overall, the data shows that the public is most responsive—in both amplification and emotional engagement—to tweets that are either highly urgent (disaster warnings) or deeply resonant (prayers, calls for help), with the numbers reflecting distinct user behaviors depending on the content’s nature.
+                </p>
+
+                <div class="mt-4">
+                  <h6 class="fw-semibold mb-2">
+                    <i class="fas fa-headphones me-2"></i>Listen to Analysis
+                  </h6>
+                  <div class="audio-player p-3 bg-light rounded">
+                    <audio controls class="w-100">
+                      <source src="audios/Super Typhoon Karding Engagement Stats.mp3" type="audio/mpeg">
+                      Your browser does not support the audio element.
+                    </audio>
+                    <p class="text-muted small mt-2 mb-0">
+                      <i class="fas fa-info-circle me-1"></i>
+                      Audio summary of the raw data analysis for ABS-CBN's Typhoon Karding coverage
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <br />
+
+              <div class="accordion" id="rawDataAccordion">
                 <!-- GMA Data -->
                 <div class="accordion-item">
                   <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gmaData" aria-expanded="false" aria-controls="gmaData">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#gmaData" aria-expanded="true" aria-controls="gmaData">
                       GMA Coverage Data
                     </button>
                   </h2>
@@ -104,6 +160,7 @@
                         <table id="gmaTable" class="table table-hover">
                             <thead class="table-light">
                                 <tr>
+                                    <th>Tweet #</th>
                                     <th>Content</th>
                                     <th>Created At</th>
                                     <th>Likes</th>
@@ -119,32 +176,32 @@
                   </div>
                 </div>
               </div>
-            </div>
-            
-            <div class="mt-3">
-              <h6 class="fw-semibold mb-2">Chart Description</h6>
-              <p class="text-secondary small">
-                Based on the numbers in the dataset, the engagement metrics—reposts, likes, and replies—reveal how users responded to different types of tweets during Super Typhoon Karding. The tweet with the highest engagement overall is Tweet 2, which warned of the typhoon’s catastrophic effects and called for immediate preparation. It received 1,388 reposts and 2,990 likes, indicating that users saw it as highly urgent and important to share. Similarly, Tweet 0, a prayer post, had 731 reposts and 2,651 likes, showing strong emotional resonance and a shared sense of hope or solidarity. Tweets that reported significant updates, such as signal number changes (Tweets 6 and 5), also had high reposts (493 and 272 respectively) and hundreds to over a thousand likes, reflecting the audience’s desire to spread critical information.
-                Replies, though generally lower, spiked in Tweet 8 with 84 replies, where the focus shifted to the lack of post-typhoon aid in an affected community. This suggests that users were more likely to respond or engage in discussion when a tweet addressed a perceived injustice or unmet need. Other tweets had minimal replies, ranging from 2 to 21, suggesting that news-style bulletins are typically not conversational but rather informative. Overall, the data shows that the public is most responsive—in both amplification and emotional engagement—to tweets that are either highly urgent (disaster warnings) or deeply resonant (prayers, calls for help), with the numbers reflecting distinct user behaviors depending on the content’s nature.
-              </p>
+              <div class="mt-3 ms-1">
+                <h6 class="fw-semibold mb-2">GMA Engagement Data Analysis</h6>
+                <p class="text-secondary small">
+                 The GMA Network dataset reflects a significantly lower level of engagement compared to the ABS-CBN dataset, based on the numerical data for reposts, likes, and replies. The most engaged tweet in this set—Tweet 2, reporting that President Marcos Jr. was in contact with Cabinet officials—garnered only 56 reposts, 174 likes, and 11 replies, suggesting moderate public interest in leadership updates. Tweets invoking prayer or offering emotional appeals (like Tweet 1) had slightly better performance with 23 reposts and 90 likes, indicating that faith-based messaging had some traction, though still limited.
+                In general, most tweets across the dataset received fewer than 25 reposts, under 100 likes, and 1 or no replies, with several tweets (e.g., Tweets 8–13) having virtually no engagement at all. Tweets about weather updates post-landfall, which typically included technical details, were the least engaged, often receiving 0–1 reposts or likes. This suggests a decline in public interest once the peak of the typhoon had passed or that these updates lacked urgency or emotional appeal.
+                Overall, the data shows that while GMA disseminated timely and relevant updates, the posts were less amplified and interacted with by users. This could reflect differences in audience behavior, post content style, or platform strategy. Numerically, the lower engagement suggests that users were either less compelled to share or emotionally invest in GMA’s posts or were more focused on other sources, such as ABS-CBN, for information and expression during Typhoon Karding.
+                </p>
 
-              <div class="mt-4">
-                <h6 class="fw-semibold mb-2">
-                  <i class="fas fa-headphones me-2"></i>Listen to Analysis
-                </h6>
-                <div class="audio-player p-3 bg-light rounded">
-                  <audio controls class="w-100">
-                    <source src="audios/Super Typhoon Karding Engagement Stats.mp3" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                  </audio>
-                  <p class="text-muted small mt-2 mb-0">
-                    <i class="fas fa-info-circle me-1"></i>
-                    Audio summary of the engagement analysis for Typhoon Karding coverage
-                  </p>
+                <div class="mt-4">
+                  <h6 class="fw-semibold mb-2">
+                    <i class="fas fa-headphones me-2"></i>Listen to Analysis
+                  </h6>
+                  <div class="audio-player p-3 bg-light rounded">
+                    <audio controls class="w-100">
+                      <source src="audios/GMA vs ABS-CBN Engagement Stats.mp3" type="audio/mpeg">
+                      Your browser does not support the audio element.
+                    </audio>
+                    <p class="text-muted small mt-2 mb-0">
+                      <i class="fas fa-info-circle me-1"></i>
+                      Audio summary of the raw data analysis for GMA's Typhoon Karding coverage
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
           </div>
+        </div>
         </div>
 
         <!-- Community Support -->

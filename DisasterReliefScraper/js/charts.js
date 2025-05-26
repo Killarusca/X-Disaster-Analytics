@@ -93,12 +93,16 @@ async function loadRawData() {
             dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
             columnDefs: [
                 {
-                    targets: 0, // Content column (first column)
-                    width: '50%' // Makes the content column take up 50% of the table width
+                    targets: 0, // Tweet # column
+                    width: '10%'
                 },
                 {
-                    targets: [1, 2, 3, 4], // Other columns
-                    width: '12.5%' // Remaining width divided equally
+                    targets: 1, // Content column
+                    width: '40%'
+                },
+                {
+                    targets: [2, 3, 4, 5], // Other columns
+                    width: '12.5%'
                 }
             ]
         };
@@ -107,6 +111,7 @@ async function loadRawData() {
         const absCbnTable = $('#absCbnTable').DataTable(tableConfig);
         absCbnData.forEach(tweet => {
             absCbnTable.row.add([
+                tweet.tweet_count,
                 tweet.text,
                 new Date(tweet.created_at).toLocaleString(),
                 tweet.likes_count,
@@ -120,6 +125,7 @@ async function loadRawData() {
         const gmaTable = $('#gmaTable').DataTable(tableConfig);
         gmaData.forEach(tweet => {
             gmaTable.row.add([
+                tweet.tweet_count,
                 tweet.text,
                 new Date(tweet.created_at).toLocaleString(),
                 tweet.likes_count,
