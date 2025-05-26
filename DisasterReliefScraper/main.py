@@ -22,26 +22,28 @@ async def main():
 
     tweet_count = 0
     query = 'GMA #KardingPH'
+    queryABSCBN = 'ABS-CBN #KardingPH'
+    queryRelief = '#KardingPH #reliefPH'
 
-    tweets = await client.search_tweet(query, product='Top')
+
+    tweets = await client.search_tweet(queryRelief, product='Top')
 
     tweet_list = []
     for tweet in tweets:
-        if "gma" in tweet.user.name.lower():
-            tweet_data = {
-                "tweet_count": tweet_count,
-                "user_name": tweet.user.name,
-                "text": tweet.text,
-                "created_at": str(tweet.created_at),
-                "reposts_count": tweet.retweet_count,
-                "likes_count": tweet.favorite_count,
-                "replies_count": tweet.reply_count,
-            }
-            tweet_list.append(tweet_data)
-            tweet_count += 1
+        tweet_data = {
+            "tweet_count": tweet_count,
+            "user_name": tweet.user.name,
+            "text": tweet.text,
+            "created_at": str(tweet.created_at),
+            "reposts_count": tweet.retweet_count,
+            "likes_count": tweet.favorite_count,
+            "replies_count": tweet.reply_count,
+        }
+        tweet_list.append(tweet_data)
+        tweet_count += 1
 
     # Dump to JSON file
-    with open('jsonData/typhoonkardinggma.json', 'w', encoding='utf-8') as f:
+    with open('jsonData/typhoonkardingrelief.json', 'w', encoding='utf-8') as f:
         json.dump(tweet_list, f, ensure_ascii=False, indent=4)
 
 if __name__ == "__main__":
