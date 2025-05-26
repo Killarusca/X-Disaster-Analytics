@@ -80,35 +80,60 @@ async function loadRawData() {
         const gmaResponse = await fetch('jsonData/typhoonkardinggma.json');
         const gmaData = await gmaResponse.json();
 
-        // Populate ABS-CBN table
-        const absCbnTable = document.querySelector('#absCbnData tbody');
-        absCbnData.forEach(tweet => {
-            const row = `
-                <tr>
-                    <td>${tweet.text}</td>
-                    <td>${new Date(tweet.created_at).toLocaleString()}</td>
-                    <td>${tweet.likes_count}</td>
-                    <td>${tweet.replies_count}</td>
-                    <td>${tweet.reposts_count}</td>
-                </tr>
-            `;
-            absCbnTable.innerHTML += row;
-        });
+        // Initialize DataTables
+        const tableConfig = {
+            pageLength: 5,
+            lengthMenu: [5, 10, 25, 50],
+            responsive: true,
+            language: {
+                paginate: {
+                    first: '«',
+                    previous: '‹',
+                    next: '›',
+                    last: '»'
+                },
+                search: "Search:",
+                lengthMenu: "Show _MENU_ entries"
+            },
+            dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
+            columnDefs: [
+                {
+                    targets: 0, // Content column (first column)
+                    width: '50%' // Makes the content column take up 50% of the table width
+                },
+                {
+                    targets: [1, 2, 3, 4], // Other columns
+                    width: '12.5%' // Remaining width divided equally
+                }
+            ]
+        };
 
-        // Populate GMA table
-        const gmaTable = document.querySelector('#gmaData tbody');
-        gmaData.forEach(tweet => {
-            const row = `
-                <tr>
-                    <td>${tweet.text}</td>
-                    <td>${new Date(tweet.created_at).toLocaleString()}</td>
-                    <td>${tweet.likes_count}</td>
-                    <td>${tweet.replies_count}</td>
-                    <td>${tweet.reposts_count}</td>
-                </tr>
-            `;
-            gmaTable.innerHTML += row;
+        // Populate and initialize ABS-CBN table
+        const absCbnTable = $('#absCbnTable').DataTable(tableConfig);
+        absCbnData.forEach(tweet => {
+            absCbnTable.row.add([
+                tweet.text,
+                new Date(tweet.created_at).toLocaleString(),
+                tweet.likes_count,
+                tweet.replies_count,
+                tweet.reposts_count
+            ]);
         });
+        absCbnTable.draw();
+
+        // Populate and initialize GMA table
+        const gmaTable = $('#gmaTable').DataTable(tableConfig);
+        gmaData.forEach(tweet => {
+            gmaTable.row.add([
+                tweet.text,
+                new Date(tweet.created_at).toLocaleString(),
+                tweet.likes_count,
+                tweet.replies_count,
+                tweet.reposts_count
+            ]);
+        });
+        gmaTable.draw();
+
     } catch (error) {
         console.error('Error loading data:', error);
     }
