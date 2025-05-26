@@ -6,13 +6,20 @@
   <title>X-Like Disaster Analytics</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+  <nav class="navbar navbar-expand-lg navbar-light mb-4">
     <div class="container">
-      <a class="navbar-brand" href="#">X-Like Disaster Analytics</a>
+      <a class="navbar-brand bg-dark text-light p-2" href="#">
+        <i class="fa-brands fa-x-twitter me-1 mb-1"></i>
+        <span class="mt-2">Disaster Analytics</span>
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -29,35 +36,115 @@
     </div>
   </nav>
 
-  <div class="container-fluid">
+  <div class="container-fluid py-5">
     <div class="row justify-content-center">
-      <main class="col-12 col-md-10 col-lg-8 px-md-4 py-4">
-        <h2 class="text-center mb-4">Natural Disasters in Luzon (2022)</h2>
-
+      <main class="col-12 col-md-10 col-lg-9 px-md-4">
+        <h2 class="text-start mb-4">Natural Disasters in Luzon (2022)</h2>
         <!-- Typhoon Karding Media Coverage -->
-        <div class="card mb-4 p-3">
-          <h5 class="text-center">Media & Influencer Coverage - Typhoon Karding</h5>
-          <div class="row">
-            <div class="col-12 col-md-6 mb-3 mb-md-0">
-              <canvas id="kardingAbsCbnChart"></canvas>
-              <p class="text-center small mt-2">ABS-CBN coverage and influencer mentions for Typhoon Karding</p>
+        <div class="card mb-4">
+          <div class="card-body p-4">
+            <h5 class="card-title text-center mb-4">Media & Influencer Coverage - Typhoon Karding</h5>
+            <div class="row g-4">
+              <div class="col-12 col-md-6">
+                <div class="chart-container">
+                  <canvas id="kardingAbsCbnChart"></canvas>
+                </div>
+                <p class="text-center small mt-3">ABS-CBN coverage and influencer mentions</p>
+              </div>
+              <div class="col-12 col-md-6">
+                <div class="chart-container">
+                  <canvas id="kardingGmaChart"></canvas>
+                </div>
+                <p class="text-center small mt-3">GMA coverage and influencer mentions</p>
+              </div>
             </div>
-            <div class="col-12 col-md-6">
-              <canvas id="kardingGmaChart"></canvas>
-              <p class="text-center small mt-2">GMA coverage and influencer mentions for Typhoon Karding</p>
+            <hr class="my-4">
+            <div class="mt-5">
+              <h5 class="card-title mb-4">Raw Data</h5>
+              <div class="accordion" id="rawDataAccordion">
+                <!-- ABS-CBN Data -->
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#absCbnData" aria-expanded="true" aria-controls="absCbnData">
+                      ABS-CBN Coverage Data
+                    </button>
+                  </h2>
+                  <div id="absCbnData" class="accordion-collapse collapse" data-bs-parent="#rawDataAccordion">
+                    <div class="accordion-body">
+                      <div class="table-responsive">
+                        <table class="table table-hover">
+                          <thead class="table-light">
+                            <tr>
+                              <th>Content</th>
+                              <th>Created At</th>
+                              <th>Likes</th>
+                              <th>Replies</th>
+                              <th>Reposts</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <!-- Data will be populated via JavaScript -->
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- GMA Data -->
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gmaData" aria-expanded="false" aria-controls="gmaData">
+                      GMA Coverage Data
+                    </button>
+                  </h2>
+                  <div id="gmaData" class="accordion-collapse collapse" data-bs-parent="#rawDataAccordion">
+                    <div class="accordion-body">
+                      <div class="table-responsive">
+                        <table class="table table-hover">
+                          <thead class="table-light">
+                            <tr>
+                              <th>Content</th>
+                              <th>Created At</th>
+                              <th>Likes</th>
+                              <th>Replies</th>
+                              <th>Reposts</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <!-- Data will be populated via JavaScript -->
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <hr class="mt-4">
-          <div class="mt-3">
-            <p class="fw-semibold mb-1">Chart Description:</p>
-            <p class="mb-0 text-secondary small">
-                Lorem ipsum dolor sit amet. Et obcaecati quidem et dolores placeat qui enim nesciunt ut ipsam unde est vero quia quo nihil Quis. 
-                Aut nisi minus sed quae earum et possimus corporis non quibusdam dolore qui itaque commodi in saepe adipisci. <br /><br />
-                Sed voluptates libero qui odit sint aut illum porro quo commodi expedita 33 rerum numquam. Ut dolorum officiis qui quos optio 
-                eos unde natus sit suscipit reiciendis est minima dolor et illo modi aut nihil expedita. Eum atque quia vel accusantium sunt qui 
-                nemo quaerat. <br /><br />
-                Qui voluptatibus consequatur et doloribus voluptates et autem voluptatem et doloremque quia. <br />
-            </p>
+            
+            <div class="mt-3">
+              <h6 class="fw-semibold mb-2">Chart Description</h6>
+              <p class="text-secondary small">
+                Based on the numbers in the dataset, the engagement metrics—reposts, likes, and replies—reveal how users responded to different types of tweets during Super Typhoon Karding. The tweet with the highest engagement overall is Tweet 2, which warned of the typhoon’s catastrophic effects and called for immediate preparation. It received 1,388 reposts and 2,990 likes, indicating that users saw it as highly urgent and important to share. Similarly, Tweet 0, a prayer post, had 731 reposts and 2,651 likes, showing strong emotional resonance and a shared sense of hope or solidarity. Tweets that reported significant updates, such as signal number changes (Tweets 6 and 5), also had high reposts (493 and 272 respectively) and hundreds to over a thousand likes, reflecting the audience’s desire to spread critical information.
+                Replies, though generally lower, spiked in Tweet 8 with 84 replies, where the focus shifted to the lack of post-typhoon aid in an affected community. This suggests that users were more likely to respond or engage in discussion when a tweet addressed a perceived injustice or unmet need. Other tweets had minimal replies, ranging from 2 to 21, suggesting that news-style bulletins are typically not conversational but rather informative. Overall, the data shows that the public is most responsive—in both amplification and emotional engagement—to tweets that are either highly urgent (disaster warnings) or deeply resonant (prayers, calls for help), with the numbers reflecting distinct user behaviors depending on the content’s nature.
+              </p>
+
+              <div class="mt-4">
+                <h6 class="fw-semibold mb-2">
+                  <i class="fas fa-headphones me-2"></i>Listen to Analysis
+                </h6>
+                <div class="audio-player p-3 bg-light rounded">
+                  <audio controls class="w-100">
+                    <source src="audios/Super Typhoon Karding Engagement Stats.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                  </audio>
+                  <p class="text-muted small mt-2 mb-0">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Audio summary of the engagement analysis for Typhoon Karding coverage
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -190,6 +277,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
   <script src="js/charts.js"></script>
 </body>
 </html>

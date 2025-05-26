@@ -68,3 +68,50 @@ window.onload = () => {
   pieChart("preparedness1", ["Posts", "Likes"], [60, 25], "Preparedness Post 1");
   pieChart("preparedness2", ["Posts", "Likes"], [40, 35], "Preparedness Post 2");
 };
+
+
+async function loadRawData() {
+    try {
+        // Load ABS-CBN data
+        const absCbnResponse = await fetch('jsonData/typhoonkardingabscbn.json');
+        const absCbnData = await absCbnResponse.json();
+        
+        // Load GMA data
+        const gmaResponse = await fetch('jsonData/typhoonkardinggma.json');
+        const gmaData = await gmaResponse.json();
+
+        // Populate ABS-CBN table
+        const absCbnTable = document.querySelector('#absCbnData tbody');
+        absCbnData.forEach(tweet => {
+            const row = `
+                <tr>
+                    <td>${tweet.text}</td>
+                    <td>${new Date(tweet.created_at).toLocaleString()}</td>
+                    <td>${tweet.likes_count}</td>
+                    <td>${tweet.replies_count}</td>
+                    <td>${tweet.reposts_count}</td>
+                </tr>
+            `;
+            absCbnTable.innerHTML += row;
+        });
+
+        // Populate GMA table
+        const gmaTable = document.querySelector('#gmaData tbody');
+        gmaData.forEach(tweet => {
+            const row = `
+                <tr>
+                    <td>${tweet.text}</td>
+                    <td>${new Date(tweet.created_at).toLocaleString()}</td>
+                    <td>${tweet.likes_count}</td>
+                    <td>${tweet.replies_count}</td>
+                    <td>${tweet.reposts_count}</td>
+                </tr>
+            `;
+            gmaTable.innerHTML += row;
+        });
+    } catch (error) {
+        console.error('Error loading data:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadRawData);
