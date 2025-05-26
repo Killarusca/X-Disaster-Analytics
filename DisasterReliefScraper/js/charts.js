@@ -52,10 +52,6 @@ window.onload = () => {
     });
   };
 
-  // Sample Data
-  doughnutChart("kardingAbsCbnChart", ["Likes", "Reposts", "Comments"], [1200, 350, 230], "ABS-CBN Coverage");
-  doughnutChart("kardingGmaChart", ["Likes", "Reposts", "Comments"], [900, 410, 190], "GMA Coverage");
-
   barChart("kardingSupportChart", ["Post 1", "Post 2", "Post 3"], [3, 5, 2], "Typhoon Karding Community Support");
   barChart("earthquakeSupportChart", ["Post A", "Post B", "Post C"], [4, 2, 1], "Luzon Earthquake Community Support");
 
@@ -68,7 +64,6 @@ window.onload = () => {
   pieChart("preparedness1", ["Posts", "Likes"], [60, 25], "Preparedness Post 1");
   pieChart("preparedness2", ["Posts", "Likes"], [40, 35], "Preparedness Post 2");
 };
-
 
 async function loadRawData() {
     try {
@@ -138,5 +133,92 @@ async function loadRawData() {
         console.error('Error loading data:', error);
     }
 }
+
+async function loadChartData() {
+    try {
+        // Load JSON data
+        const absCbnResponse = await fetch('jsonData/typhoonkardingabscbn.json');
+        const absCbnData = await absCbnResponse.json();
+        
+        const gmaResponse = await fetch('jsonData/typhoonkardinggma.json');
+        const gmaData = await gmaResponse.json();
+
+        // Calculate sums for ABS-CBN
+        const absCbnStats = absCbnData.reduce((acc, tweet) => {
+            acc.likes += tweet.likes_count;
+            acc.reposts += tweet.reposts_count;
+            acc.replies += tweet.replies_count;
+            return acc;
+        }, { likes: 0, reposts: 0, replies: 0 });
+
+        // Calculate sums for GMA
+        const gmaStats = gmaData.reduce((acc, tweet) => {
+            acc.likes += tweet.likes_count;
+            acc.reposts += tweet.reposts_count;
+            acc.replies += tweet.replies_count;
+            return acc;
+        }, { likes: 0, reposts: 0, replies: 0 });
+
+        // Create ABS-CBN Chart
+        // ...existing code...
+
+        // Create ABS-CBN Chart
+        const absCbnCtx = document.getElementById('kardingAbsCbnChart').getContext('2d');
+        new Chart(absCbnCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Likes', 'Reposts', 'Replies'],
+                datasets: [{
+                    data: [absCbnStats.likes, absCbnStats.reposts, absCbnStats.replies],
+                    backgroundColor: ['#1da1f2', '#17bf63', '#e0245e'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Total Engagement Metrics - ABS-CBN'
+                    },
+                    legend: {
+                        position: 'top'
+                    }
+                }
+            }
+        });
+
+        // Create GMA Chart
+        const gmaCtx = document.getElementById('kardingGmaChart').getContext('2d');
+        new Chart(gmaCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Likes', 'Reposts', 'Replies'],
+                datasets: [{
+                    data: [gmaStats.likes, gmaStats.reposts, gmaStats.replies],
+                    backgroundColor: ['#1da1f2', '#17bf63', '#e0245e'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Total Engagement Metrics - GMA'
+                    },
+                    legend: {
+                        position: 'top'
+                    }
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error('Error loading chart data:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadChartData);
 
 document.addEventListener('DOMContentLoaded', loadRawData);
