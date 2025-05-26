@@ -162,3 +162,33 @@ h2, h5 {
     padding: 1rem;
     word-break: break-word;
 }
+
+
+/* About page styles */
+.tech-card {
+    height: 100%;
+    transition: transform 0.2s ease;
+}
+
+.tech-card:hover {
+    transform: translateY(-5px);
+}
+
+.team-card {
+    transition: transform 0.2s ease;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.team-card:hover {
+    transform: translateY(-5px);
+}
+
+.list-unstyled li {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
