@@ -357,77 +357,104 @@ async function loadCarinaEmergencyCharts() {
     }
 
     // Create Government Chart (Top Post)
-    const govCtx = document
-      .getElementById("earthquakeRelief1")
-      .getContext("2d");
-    new Chart(govCtx, {
-      type: "doughnut",
-      data: {
-        labels: ["Likes", "Reposts", "Replies"],
-        datasets: [
-          {
-            data: [
-              topGovTweetStats.likes,
-              topGovTweetStats.reposts,
-              topGovTweetStats.replies,
-            ],
-            backgroundColor: ["#1da1f2", "#17bf63", "#e0245e"],
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: "Top Government Post - Typhoon Carina",
-          },
-          legend: {
-            position: "top",
-          },
-        },
-      },
-    });
+    doughnutChart(
+      "earthquakeRelief1", // ID for the government chart canvas
+      ["Likes", "Reposts", "Replies"],
+      [
+        topGovTweetStats.likes,
+        topGovTweetStats.reposts,
+        topGovTweetStats.replies,
+      ],
+      "Top Government Post - Typhoon Carina"
+    );
 
     // Create Community Chart (Top Post)
-    const commCtx = document
-      .getElementById("earthquakeRelief2")
-      .getContext("2d");
-    new Chart(commCtx, {
-      type: "doughnut",
-      data: {
-        labels: ["Likes", "Reposts", "Replies"],
-        datasets: [
-          {
-            data: [
-              topCommTweetStats.likes,
-              topCommTweetStats.reposts,
-              topCommTweetStats.replies,
-            ],
-            backgroundColor: ["#1da1f2", "#17bf63", "#e0245e"],
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: "Top Community Post - Typhoon Carina",
-          },
-          legend: {
-            position: "top",
-          },
+    doughnutChart(
+      "earthquakeRelief2", // ID for the community chart canvas
+      ["Likes", "Reposts", "Replies"],
+      [
+        topCommTweetStats.likes,
+        topCommTweetStats.reposts,
+        topCommTweetStats.replies,
+      ],
+      "Top Community Post - Typhoon Carina"
+    );
+
+    // Initialize DataTables for Carina Emergency Data
+    const tableConfigCarina = {
+      pageLength: 5,
+      lengthMenu: [5, 10, 25, 50],
+      responsive: true,
+      language: {
+        paginate: {
+          first: "«",
+          previous: "‹",
+          next: "›",
+          last: "»",
         },
+        search: "Search:",
+        lengthMenu: "Show _MENU_ entries",
       },
-    });
+      dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
+      columnDefs: [
+        { targets: 0, title: "User", width: "15%" },
+        { targets: 1, title: "Tweet Content", width: "40%" },
+        { targets: 2, title: "Date", width: "15%" },
+        { targets: 3, title: "Likes", width: "10%" },
+        { targets: 4, title: "Replies", width: "10%" },
+        { targets: 5, title: "Reposts", width: "10%" },
+      ],
+    };
+
+    // Populate and initialize Carina Government Emergency table
+    if ($.fn.DataTable.isDataTable('#carinaGovEmergencyTable')) {
+        $('#carinaGovEmergencyTable').DataTable().destroy();
+    }
+    const carinaGovTable = $("#carinaGovEmergencyTable").DataTable(tableConfigCarina);
+    if (govData && govData.length > 0) {
+        govData.forEach((tweet) => {
+            carinaGovTable.row.add([
+                tweet.user_name || "N/A",
+                tweet.text || "N/A",
+                tweet.created_at ? new Date(tweet.created_at).toLocaleString() : "N/A",
+                tweet.likes_count || 0,
+                tweet.replies_count || 0,
+                tweet.reposts_count || 0,
+            ]);
+        });
+        carinaGovTable.draw();
+    } else {
+        carinaGovTable.clear().draw();
+    }
+
+    // Populate and initialize Carina Community Emergency table
+    if ($.fn.DataTable.isDataTable('#carinaCommEmergencyTable')) {
+        $('#carinaCommEmergencyTable').DataTable().destroy();
+    }
+    const carinaCommTable = $("#carinaCommEmergencyTable").DataTable(tableConfigCarina);
+    if (commData && commData.length > 0) {
+        commData.forEach((tweet) => {
+            carinaCommTable.row.add([
+                tweet.user_name || "N/A",
+                tweet.text || "N/A",
+                tweet.created_at ? new Date(tweet.created_at).toLocaleString() : "N/A",
+                tweet.likes_count || 0,
+                tweet.replies_count || 0,
+                tweet.reposts_count || 0,
+            ]);
+        });
+        carinaCommTable.draw();
+    } else {
+        carinaCommTable.clear().draw();
+    }
+
   } catch (error) {
-    console.error("Error loading Carina emergency charts:", error);
+    console.error("Error loading Carina emergency charts or tables:", error);
   }
 }
+// ...existing code...
 
+// ...existing code...
 async function loadHenryPreparednessCharts() {
   try {
     // Load government preparedness data for Typhoon Henry
@@ -494,10 +521,87 @@ async function loadHenryPreparednessCharts() {
       ],
       "Top Community Post (Preparedness) - Typhoon Henry"
     );
+
+    // Initialize DataTables for Henry Preparedness Data
+    // Configuration similar to loadRawData
+    const tableConfigHenry = {
+      pageLength: 5,
+      lengthMenu: [5, 10, 25, 50],
+      responsive: true,
+      language: {
+        paginate: {
+          first: "«",
+          previous: "‹",
+          next: "›",
+          last: "»",
+        },
+        search: "Search:",
+        lengthMenu: "Show _MENU_ entries",
+      },
+      dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
+      // Adjust columnDefs based on the actual data structure of typhoonHenry_*.json
+      // Assuming user_name, text, created_at, likes_count, replies_count, reposts_count
+      columnDefs: [
+        { targets: 0, title: "User", width: "15%" }, // User
+        { targets: 1, title: "Tweet Content", width: "40%" }, // Tweet Content
+        { targets: 2, title: "Date", width: "15%" }, // Date
+        { targets: 3, title: "Likes", width: "10%" }, // Likes
+        { targets: 4, title: "Replies", width: "10%" }, // Replies
+        { targets: 5, title: "Reposts", width: "10%" }, // Reposts
+      ],
+    };
+
+    // Populate and initialize Henry Government Preparedness table
+    if ($.fn.DataTable.isDataTable('#henryGovPreparednessTable')) {
+        $('#henryGovPreparednessTable').DataTable().destroy();
+    }
+    const henryGovTable = $("#henryGovPreparednessTable").DataTable(tableConfigHenry);
+    if (govHenryData && govHenryData.length > 0) {
+        govHenryData.forEach((tweet) => {
+            henryGovTable.row.add([
+                tweet.user_name || "N/A",
+                tweet.text || "N/A",
+                tweet.created_at ? new Date(tweet.created_at).toLocaleString() : "N/A",
+                tweet.likes_count || 0,
+                tweet.replies_count || 0,
+                tweet.reposts_count || 0,
+            ]);
+        });
+        henryGovTable.draw();
+    } else {
+        // Optionally, display a message if no data
+        henryGovTable.clear().draw();
+        // henryGovTable.row.add(["No data available", "", "", "", "", ""]).draw();
+    }
+
+    // Populate and initialize Henry Community Preparedness table
+    if ($.fn.DataTable.isDataTable('#henryCommPreparednessTable')) {
+        $('#henryCommPreparednessTable').DataTable().destroy();
+    }
+    const henryCommTable = $("#henryCommPreparednessTable").DataTable(tableConfigHenry);
+    if (commHenryData && commHenryData.length > 0) {
+        commHenryData.forEach((tweet) => {
+            henryCommTable.row.add([
+                tweet.user_name || "N/A",
+                tweet.text || "N/A",
+                tweet.created_at ? new Date(tweet.created_at).toLocaleString() : "N/A",
+                tweet.likes_count || 0,
+                tweet.replies_count || 0,
+                tweet.reposts_count || 0,
+            ]);
+        });
+        henryCommTable.draw();
+    } else {
+        // Optionally, display a message if no data
+        henryCommTable.clear().draw();
+        // henryCommTable.row.add(["No data available", "", "", "", "", ""]).draw();
+    }
+
   } catch (error) {
-    console.error("Error loading Typhoon Henry preparedness charts:", error);
+    console.error("Error loading Typhoon Henry preparedness charts or tables:", error);
   }
 }
+// ...existing code...
 
 document.addEventListener("DOMContentLoaded", loadCarinaEmergencyCharts);
 document.addEventListener("DOMContentLoaded", loadHenryPreparednessCharts); // Added call for Henry charts
