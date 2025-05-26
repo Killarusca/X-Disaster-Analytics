@@ -58,8 +58,8 @@ window.onload = () => {
   pieChart("infraAbsCbnChart", ["Likes", "Reposts", "Comments"], [300, 50, 20], "Infrastructure - ABS-CBN");
   pieChart("infraGmaChart", ["Likes", "Reposts", "Comments"], [280, 60, 30], "Infrastructure - GMA");
 
-  doughnutChart("earthquakeRelief1", ["Likes", "Reposts", "Comments"], [80, 30, 20], "Relief Post 1");
-  doughnutChart("earthquakeRelief2", ["Likes", "Reposts", "Comments"], [120, 40, 15], "Relief Post 2");
+  doughnutChart("earthquakeRelief1", ["Likes", "Reposts", "Comments"], [80, 30, 20], "Emergency Response - Typhoon Carina (Gov)");
+  doughnutChart("earthquakeRelief2", ["Likes", "Reposts", "Comments"], [120, 40, 15], "Emergency Response - Typhoon Carina (NGOs/Volunteers)");
 
   pieChart("preparedness1", ["Posts", "Likes"], [60, 25], "Preparedness Post 1");
   pieChart("preparedness2", ["Posts", "Likes"], [40, 35], "Preparedness Post 2");
@@ -224,6 +224,8 @@ async function loadChartData() {
         console.error('Error loading chart data:', error);
     }
 }
+
+
 
 document.addEventListener('DOMContentLoaded', loadChartData);
 
