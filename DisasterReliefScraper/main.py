@@ -27,20 +27,12 @@ async def main():
     queryABSCBN = 'ABS-CBN #KardingPH'
     queryRelief = '#KardingPH #reliefPH'
     queryCarina = 'Carina OR #CarinaPH OR Typhoon Carina relief OR rescue OR volunteer OR donation OR support OR emergency' 
-    queryHenryCommunity = (
-    '#HenryPH '
-    'volunteer donation relief drive community pantry '
-    'rescue team emergency help public support '
-    'awareness spread info bayanihan Filipino spirit '
-    'news update TV Patrol GMA News ABS-CBN '
-    'DSWD NDRRMC LGU barangay mayor governor '
-    'Philippine government official statement announcement '
-    'relief goods evacuation rescue operation state of calamity '
-    'government aid disaster response public advisory'
-    )
+    queryHenryCommunity = '#HenryPH "Typhoon Henry" relief rescue volunteer donation support emergency'
+
+
     query_abscbn_henryph = 'ABSCBN #HenryPH'
 
-    query_gma_henryph = 'GMA Network #HenryPH'
+    query_gma_henryph = 'from:gmanewsweather rescue OR relief OR donation OR #HenryPH'
 
 
     government_keywords = [
@@ -51,7 +43,7 @@ async def main():
     government_tweets = []
     community_tweets = []
 
-    tweets = await client.search_tweet(query_gma_henryph  , product='Top')
+    tweets = await client.search_tweet(query_gma_henryph, product='Top')
 
     tweet_list = []
     for tweet in tweets:
@@ -77,7 +69,7 @@ async def main():
     # Save to separate files
     with open('jsonData/typhoonHenry_gma.json', 'w', encoding='utf-8') as f:
         json.dump(government_tweets, f, ensure_ascii=False, indent=4)
-    with open('jsonData/typhoonHenry_community.json', 'w', encoding='utf-8') as f:
+    with open('jsonData/typhoonHenry_gov.json', 'w', encoding='utf-8') as f:
         json.dump(community_tweets, f, ensure_ascii=False, indent=4)
 
 if __name__ == "__main__":
