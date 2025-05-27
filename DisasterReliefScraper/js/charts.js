@@ -403,80 +403,79 @@ async function loadChartData() {
 // ...existing code...
 async function loadCarinaEmergencyCharts() {
   try {
-    // Load government data
-    const govResponse = await fetch("jsonData/typhooncarina_gov.json");
-    const govData = await govResponse.json();
-
     // Load community data
     const commResponse = await fetch("jsonData/typhooncarina_community.json");
+    if (!commResponse.ok) {
+        throw new Error(`HTTP error! Status: ${commResponse.status} for typhooncarina_community.json`);
+    }
     const commData = await commResponse.json();
 
-    // Find the government tweet with the highest likes_count
-    let topGovTweetStats = { likes: 0, reposts: 0, replies: 0 };
-    if (govData && govData.length > 0) {
-      const topGovTweet = govData.reduce((maxTweet, currentTweet) => {
-        return (currentTweet.likes_count || 0) > (maxTweet.likes_count || 0)
-          ? currentTweet
-          : maxTweet;
-      }, govData[0]); // Initialize with the first tweet
-      topGovTweetStats = {
-        likes: topGovTweet.likes_count || 0,
-        reposts: topGovTweet.reposts_count || 0,
-        replies: topGovTweet.replies_count || 0,
-      };
-    }
+    const pleaKeywords = ["rescueph", "need rescue", "stuck", "trapped", "help please", "urgent help"];
+    const orgInfoAidKeywords = ["donation drive", "hotline", "emergency contact", "relief operation", "call for donations", "safety advisory", "emergency hotlines"];
 
-    // Find the community tweet with the highest likes_count
-    let topCommTweetStats = { likes: 0, reposts: 0, replies: 0 };
+    let topPleaPostStats = { likes: 0, reposts: 0, replies: 0 };
+    let pleaPostsData = [];
+    let topOrgInfoAidPostStats = { likes: 0, reposts: 0, replies: 0 };
+    let orgInfoAidPostsData = [];
+
     if (commData && commData.length > 0) {
-      const topCommTweet = commData.reduce((maxTweet, currentTweet) => {
-        return (currentTweet.likes_count || 0) > (maxTweet.likes_count || 0)
-          ? currentTweet
-          : maxTweet;
-      }, commData[0]); // Initialize with the first tweet
-      topCommTweetStats = {
-        likes: topCommTweet.likes_count || 0,
-        reposts: topCommTweet.reposts_count || 0,
-        replies: topCommTweet.replies_count || 0,
-      };
+      commData.forEach(tweet => {
+        const tweetTextLower = tweet.text ? tweet.text.toLowerCase() : "";
+        let isPlea = pleaKeywords.some(keyword => tweetTextLower.includes(keyword));
+        let isOrgInfoAid = orgInfoAidKeywords.some(keyword => tweetTextLower.includes(keyword));
+
+        if (isPlea) {
+          pleaPostsData.push(tweet);
+          if ((tweet.likes_count || 0) > topPleaPostStats.likes) {
+            topPleaPostStats = {
+              likes: tweet.likes_count || 0,
+              reposts: tweet.reposts_count || 0,
+              replies: tweet.replies_count || 0,
+            };
+          }
+        } else if (isOrgInfoAid) { // Categorize as org/info/aid if not primarily a plea
+          orgInfoAidPostsData.push(tweet);
+          if ((tweet.likes_count || 0) > topOrgInfoAidPostStats.likes) {
+            topOrgInfoAidPostStats = {
+              likes: tweet.likes_count || 0,
+              reposts: tweet.reposts_count || 0,
+              replies: tweet.replies_count || 0,
+            };
+          }
+        }
+      });
     }
 
-    // Create Government Chart (Top Post)
+    // Create Chart for Top Urgent Plea/Rescue Call
     doughnutChart(
-      "earthquakeRelief1", // ID for the government chart canvas
+      "earthquakeRelief1", 
       ["Likes", "Reposts", "Replies"],
       [
-        topGovTweetStats.likes,
-        topGovTweetStats.reposts,
-        topGovTweetStats.replies,
+        topPleaPostStats.likes,
+        topPleaPostStats.reposts,
+        topPleaPostStats.replies,
       ],
-      "Top Government Post - Typhoon Carina"
+      "Top Urgent Community Plea/Rescue Call - Typhoon Carina"
     );
 
-    // Create Community Chart (Top Post)
+    // Create Chart for Top Organized Community Info/Aid Post
     doughnutChart(
-      "earthquakeRelief2", // ID for the community chart canvas
+      "earthquakeRelief2", 
       ["Likes", "Reposts", "Replies"],
       [
-        topCommTweetStats.likes,
-        topCommTweetStats.reposts,
-        topCommTweetStats.replies,
+        topOrgInfoAidPostStats.likes,
+        topOrgInfoAidPostStats.reposts,
+        topOrgInfoAidPostStats.replies,
       ],
-      "Top Community Post - Typhoon Carina"
+      "Top Organized Community Info/Aid Post - Typhoon Carina"
     );
 
-    // Initialize DataTables for Carina Emergency Data
     const tableConfigCarina = {
       pageLength: 5,
       lengthMenu: [5, 10, 25, 50],
       responsive: true,
       language: {
-        paginate: {
-          first: "«",
-          previous: "‹",
-          next: "›",
-          last: "»",
-        },
+        paginate: { first: "«", previous: "‹", next: "›", last: "»" },
         search: "Search:",
         lengthMenu: "Show _MENU_ entries",
       },
@@ -491,14 +490,14 @@ async function loadCarinaEmergencyCharts() {
       ],
     };
 
-    // Populate and initialize Carina Government Emergency table
-    if ($.fn.DataTable.isDataTable('#carinaGovEmergencyTable')) {
-        $('#carinaGovEmergencyTable').DataTable().destroy();
+    // Populate and initialize Carina Urgent Pleas table (formerly gov table)
+    if ($.fn.DataTable.isDataTable('#carinaPleaTable')) { // Ensure HTML ID is updated
+        $('#carinaPleaTable').DataTable().destroy();
     }
-    const carinaGovTable = $("#carinaGovEmergencyTable").DataTable(tableConfigCarina);
-    if (govData && govData.length > 0) {
-        govData.forEach((tweet) => {
-            carinaGovTable.row.add([
+    const carinaPleaTable = $("#carinaPleaTable").DataTable(tableConfigCarina);
+    if (pleaPostsData.length > 0) {
+        pleaPostsData.forEach((tweet) => {
+            carinaPleaTable.row.add([
                 tweet.user_name || "N/A",
                 tweet.text || "N/A",
                 tweet.created_at ? new Date(tweet.created_at).toLocaleString() : "N/A",
@@ -507,19 +506,19 @@ async function loadCarinaEmergencyCharts() {
                 tweet.reposts_count || 0,
             ]);
         });
-        carinaGovTable.draw();
+        carinaPleaTable.draw();
     } else {
-        carinaGovTable.clear().draw();
+        carinaPleaTable.clear().draw();
     }
 
-    // Populate and initialize Carina Community Emergency table
-    if ($.fn.DataTable.isDataTable('#carinaCommEmergencyTable')) {
-        $('#carinaCommEmergencyTable').DataTable().destroy();
+    // Populate and initialize Carina Organized Info/Aid table (formerly community table)
+    if ($.fn.DataTable.isDataTable('#carinaOrgInfoAidTable')) { // Ensure HTML ID is updated
+        $('#carinaOrgInfoAidTable').DataTable().destroy();
     }
-    const carinaCommTable = $("#carinaCommEmergencyTable").DataTable(tableConfigCarina);
-    if (commData && commData.length > 0) {
-        commData.forEach((tweet) => {
-            carinaCommTable.row.add([
+    const carinaOrgInfoAidTable = $("#carinaOrgInfoAidTable").DataTable(tableConfigCarina);
+    if (orgInfoAidPostsData.length > 0) {
+        orgInfoAidPostsData.forEach((tweet) => {
+            carinaOrgInfoAidTable.row.add([
                 tweet.user_name || "N/A",
                 tweet.text || "N/A",
                 tweet.created_at ? new Date(tweet.created_at).toLocaleString() : "N/A",
@@ -528,9 +527,9 @@ async function loadCarinaEmergencyCharts() {
                 tweet.reposts_count || 0,
             ]);
         });
-        carinaCommTable.draw();
+        carinaOrgInfoAidTable.draw();
     } else {
-        carinaCommTable.clear().draw();
+        carinaOrgInfoAidTable.clear().draw();
     }
 
   } catch (error) {
@@ -542,108 +541,97 @@ async function loadCarinaEmergencyCharts() {
 // ...existing code...
 async function loadHenryPreparednessCharts() {
   try {
-    // Load government preparedness data for Typhoon Henry
     const govHenryResponse = await fetch("jsonData/typhoonHenry_gov.json");
     const govHenryData = await govHenryResponse.json();
 
-    let topGovHenryTweetStats = { likes: 0, reposts: 0, replies: 0 };
-    if (govHenryData && govHenryData.length > 0) {
-      const topGovHenryTweet = govHenryData.reduce((maxTweet, currentTweet) => {
-        return (currentTweet.likes_count || 0) > (maxTweet.likes_count || 0)
-          ? currentTweet
-          : maxTweet;
-      }, govHenryData[0]); // Initialize with the first tweet
-      topGovHenryTweetStats = {
-        likes: topGovHenryTweet.likes_count || 0,
-        reposts: topGovHenryTweet.reposts_count || 0,
-        replies: topGovHenryTweet.replies_count || 0,
-      };
-    }
-
-    // Load community preparedness data for Typhoon Henry
-    const commHenryResponse = await fetch(
-      "jsonData/typhoonHenry_community.json"
-    );
+    const commHenryResponse = await fetch("jsonData/typhoonHenry_community.json");
     const commHenryData = await commHenryResponse.json();
 
-    let topCommHenryTweetStats = { likes: 0, reposts: 0, replies: 0 };
-    if (commHenryData && commHenryData.length > 0) {
-      const topCommHenryTweet = commHenryData.reduce(
-        (maxTweet, currentTweet) => {
-          return (currentTweet.likes_count || 0) > (maxTweet.likes_count || 0)
-            ? currentTweet
-            : maxTweet;
-        },
-        commHenryData[0]
-      ); // Initialize with the first tweet
-      topCommHenryTweetStats = {
-        likes: topCommHenryTweet.likes_count || 0,
-        reposts: topCommHenryTweet.reposts_count || 0,
-        replies: topCommHenryTweet.replies_count || 0,
-      };
-    }
+    const allHenryPosts = [...(govHenryData || []), ...(commHenryData || [])];
 
-    // Create Government Preparedness Chart (Top Post)
+    const earlyWarningKeywords = ["prepare", "go-bag", "evacuation center", "secure home", "stay informed", "safety tips", "advisory", "maghanda", "ligtas", "paalala", "bulletin", "warning", "signal no."];
+    const resourceMobilizationKeywords = ["donation", "volunteer", "relief goods", "rescue boat", "need help", "looking for", "we need", "tulong", "donasyon", "suporta", "call for", "mobilize"];
+
+    let topEarlyWarningPost = null;
+    let topResourcePost = null;
+
+    let earlyWarningPostsForTable = [];
+    let resourceMobilizationPostsForTable = [];
+
+    allHenryPosts.forEach(tweet => {
+      const textLower = (tweet.text || "").toLowerCase();
+      const likes = tweet.likes_count || 0;
+
+      const isEarlyWarning = earlyWarningKeywords.some(kw => textLower.includes(kw));
+      const isResourceMobilization = resourceMobilizationKeywords.some(kw => textLower.includes(kw));
+
+      if (isEarlyWarning) {
+        earlyWarningPostsForTable.push(tweet);
+        if (!topEarlyWarningPost || likes > (topEarlyWarningPost.likes_count || 0)) {
+          topEarlyWarningPost = tweet;
+        }
+      } else if (isResourceMobilization) { // Only categorize as resource mobilization if not already early warning
+        resourceMobilizationPostsForTable.push(tweet);
+        if (!topResourcePost || likes > (topResourcePost.likes_count || 0)) {
+          topResourcePost = tweet;
+        }
+      }
+    });
+
+    const topEarlyWarningStats = topEarlyWarningPost ? {
+      likes: topEarlyWarningPost.likes_count || 0,
+      reposts: topEarlyWarningPost.reposts_count || 0,
+      replies: topEarlyWarningPost.replies_count || 0,
+    } : { likes: 0, reposts: 0, replies: 0 };
+
+    const topResourceStats = topResourcePost ? {
+      likes: topResourcePost.likes_count || 0,
+      reposts: topResourcePost.reposts_count || 0,
+      replies: topResourcePost.replies_count || 0,
+    } : { likes: 0, reposts: 0, replies: 0 };
+
     pieChart(
       "preparedness1",
       ["Likes", "Reposts", "Replies"],
-      [
-        topGovHenryTweetStats.likes,
-        topGovHenryTweetStats.reposts,
-        topGovHenryTweetStats.replies,
-      ],
-      "Top Government Post (Preparedness) - Typhoon Henry"
+      [topEarlyWarningStats.likes, topEarlyWarningStats.reposts, topEarlyWarningStats.replies],
+      "Top Early Warning & Guidance Post - Typhoon Henry"
     );
 
-    // Create Community Preparedness Chart (Top Post)
     pieChart(
       "preparedness2",
       ["Likes", "Reposts", "Replies"],
-      [
-        topCommHenryTweetStats.likes,
-        topCommHenryTweetStats.reposts,
-        topCommHenryTweetStats.replies,
-      ],
-      "Top Community Post (Preparedness) - Typhoon Henry"
+      [topResourceStats.likes, topResourceStats.reposts, topResourceStats.replies],
+      "Top Resource & Action Mobilization Post - Typhoon Henry"
     );
 
-    // Initialize DataTables for Henry Preparedness Data
-    // Configuration similar to loadRawData
     const tableConfigHenry = {
       pageLength: 5,
       lengthMenu: [5, 10, 25, 50],
       responsive: true,
       language: {
-        paginate: {
-          first: "«",
-          previous: "‹",
-          next: "›",
-          last: "»",
-        },
+        paginate: { first: "«", previous: "‹", next: "›", last: "»" },
         search: "Search:",
         lengthMenu: "Show _MENU_ entries",
       },
       dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
-      // Adjust columnDefs based on the actual data structure of typhoonHenry_*.json
-      // Assuming user_name, text, created_at, likes_count, replies_count, reposts_count
       columnDefs: [
-        { targets: 0, title: "User", width: "15%" }, // User
-        { targets: 1, title: "Tweet Content", width: "40%" }, // Tweet Content
-        { targets: 2, title: "Date", width: "15%" }, // Date
-        { targets: 3, title: "Likes", width: "10%" }, // Likes
-        { targets: 4, title: "Replies", width: "10%" }, // Replies
-        { targets: 5, title: "Reposts", width: "10%" }, // Reposts
+        { targets: 0, title: "User", width: "15%" },
+        { targets: 1, title: "Tweet Content", width: "40%" },
+        { targets: 2, title: "Date", width: "15%" },
+        { targets: 3, title: "Likes", width: "10%" },
+        { targets: 4, title: "Replies", width: "10%" },
+        { targets: 5, title: "Reposts", width: "10%" },
       ],
     };
 
-    // Populate and initialize Henry Government Preparedness table
-    if ($.fn.DataTable.isDataTable('#henryGovPreparednessTable')) {
-        $('#henryGovPreparednessTable').DataTable().destroy();
+    // Populate and initialize Henry Early Warning & Guidance table
+    if ($.fn.DataTable.isDataTable('#henryEarlyWarningTable')) {
+        $('#henryEarlyWarningTable').DataTable().destroy();
     }
-    const henryGovTable = $("#henryGovPreparednessTable").DataTable(tableConfigHenry);
-    if (govHenryData && govHenryData.length > 0) {
-        govHenryData.forEach((tweet) => {
-            henryGovTable.row.add([
+    const henryEarlyWarningTable = $("#henryEarlyWarningTable").DataTable(tableConfigHenry);
+    if (earlyWarningPostsForTable.length > 0) {
+        earlyWarningPostsForTable.forEach((tweet) => {
+            henryEarlyWarningTable.row.add([
                 tweet.user_name || "N/A",
                 tweet.text || "N/A",
                 tweet.created_at ? new Date(tweet.created_at).toLocaleString() : "N/A",
@@ -652,21 +640,19 @@ async function loadHenryPreparednessCharts() {
                 tweet.reposts_count || 0,
             ]);
         });
-        henryGovTable.draw();
+        henryEarlyWarningTable.draw();
     } else {
-        // Optionally, display a message if no data
-        henryGovTable.clear().draw();
-        // henryGovTable.row.add(["No data available", "", "", "", "", ""]).draw();
+        henryEarlyWarningTable.clear().draw();
     }
 
-    // Populate and initialize Henry Community Preparedness table
-    if ($.fn.DataTable.isDataTable('#henryCommPreparednessTable')) {
-        $('#henryCommPreparednessTable').DataTable().destroy();
+    // Populate and initialize Henry Resource & Action Mobilization table
+    if ($.fn.DataTable.isDataTable('#henryResourceMobilizationTable')) {
+        $('#henryResourceMobilizationTable').DataTable().destroy();
     }
-    const henryCommTable = $("#henryCommPreparednessTable").DataTable(tableConfigHenry);
-    if (commHenryData && commHenryData.length > 0) {
-        commHenryData.forEach((tweet) => {
-            henryCommTable.row.add([
+    const henryResourceMobilizationTable = $("#henryResourceMobilizationTable").DataTable(tableConfigHenry);
+    if (resourceMobilizationPostsForTable.length > 0) {
+        resourceMobilizationPostsForTable.forEach((tweet) => {
+            henryResourceMobilizationTable.row.add([
                 tweet.user_name || "N/A",
                 tweet.text || "N/A",
                 tweet.created_at ? new Date(tweet.created_at).toLocaleString() : "N/A",
@@ -675,11 +661,9 @@ async function loadHenryPreparednessCharts() {
                 tweet.reposts_count || 0,
             ]);
         });
-        henryCommTable.draw();
+        henryResourceMobilizationTable.draw();
     } else {
-        // Optionally, display a message if no data
-        henryCommTable.clear().draw();
-        // henryCommTable.row.add(["No data available", "", "", "", "", ""]).draw();
+        henryResourceMobilizationTable.clear().draw();
     }
 
   } catch (error) {
@@ -687,88 +671,6 @@ async function loadHenryPreparednessCharts() {
   }
 }
 // ...existing code...
-
-const tableConfig = {
-  destroy: true, // allow reinitialization
-  responsive: true,
-  paging: true,
-  searching: true,
-  // add your other DataTable options here
-};
-
-async function loadTable(jsonPath, tableId) {
-  try {
-    const response = await fetch(jsonPath);
-    const data = await response.json();
-
-    // Destroy existing DataTable if exists
-    if ($.fn.DataTable.isDataTable(`#${tableId}`)) {
-      $(`#${tableId}`).DataTable().clear().destroy();
-    }
-
-    const dataTable = $(`#${tableId}`).DataTable(tableConfig);
-    dataTable.clear();
-
-    data.forEach((tweet, index) => {
-      dataTable.row.add([
-        index + 1,
-        tweet.text,
-        new Date(tweet.created_at).toLocaleString(),
-        tweet.likes_count,
-        tweet.replies_count,
-        tweet.reposts_count,
-      ]);
-    });
-
-    dataTable.draw();
-  } catch (error) {
-    console.error("Error loading data:", error);
-  }
-}
-
-$(document).ready(function () {
-  let communityLoaded = false;
-  let govLoaded = false;
-
-  // Load Community Data when accordion expands
-  $("#collapseCommunity").on("shown.bs.collapse", () => {
-    if (!communityLoaded) {
-      loadTable("jsonData/typhoonHenry_community.json", "communityTable");
-      communityLoaded = true;
-    }
-  });
-
-  // Load Government Data when accordion expands
-  $("#collapseGov").on("shown.bs.collapse", () => {
-    if (!govLoaded) {
-      loadTable("jsonData/typhoonHenry_gov.json", "govTable");
-      govLoaded = true;
-    }
-  });
-});
-
-$(document).ready(function () {
-  let abscbnLoaded = false;
-  let gmaLoaded = false;
-
-  $("#collapseAbscbn").on("shown.bs.collapse", () => {
-    if (!abscbnLoaded) {
-      loadTable(
-        "jsonData/typhoonHenry_abscbn.json",
-        "abscbnTable",
-        "abscbnContainer"
-      );
-      abscbnLoaded = true;
-    }
-  });
-
-  $("#collapseGma").on("shown.bs.collapse", () => {
-    if (!gmaLoaded) {
-      loadTable("jsonData/typhoonHenry_gma.json", "gmaTable", "gmaContainer");
-      gmaLoaded = true;
-    }
-  });
-});
 
 document.addEventListener("DOMContentLoaded", loadCarinaEmergencyCharts);
 document.addEventListener("DOMContentLoaded", loadHenryPreparednessCharts); // Added call for Henry charts

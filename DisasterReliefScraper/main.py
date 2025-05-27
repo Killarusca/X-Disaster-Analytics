@@ -46,12 +46,12 @@ async def main():
     government_keywords = [
         'gov', 'dilg', 'dswd', 'red cross', 'philstar', 'official', 'president', 'mayor', 'senator', 'congress',
         'department', 'city', 'municipality', 'barangay', 'pnp', 'bfp', 'pagasa', 'nfa', 'dotr', 'doh',
-        'ang probinsyano', 'vice president', 'angat buhay', 'leni robredo', 'angat bayanihan'
+        'ang probinsyano', 'vice president', 'leni robredo', 'rodrigo duterte', 'marcos', 'bbm', 'bongbong marcos',
     ]   
     government_tweets = []
     community_tweets = []
 
-    tweets = await client.search_tweet(query_gma_henryph  , product='Top')
+    tweets = await client.search_tweet(queryHenryCommunity  , product='Top')
 
     tweet_list = []
     for tweet in tweets:
@@ -75,7 +75,7 @@ async def main():
             tweet_count_comm += 1
 
     # Save to separate files
-    with open('jsonData/typhoonHenry_gma.json', 'w', encoding='utf-8') as f:
+    with open('jsonData/typhoonHenry_gov.json', 'w', encoding='utf-8') as f:
         json.dump(government_tweets, f, ensure_ascii=False, indent=4)
     with open('jsonData/typhoonHenry_community.json', 'w', encoding='utf-8') as f:
         json.dump(community_tweets, f, ensure_ascii=False, indent=4)
