@@ -539,44 +539,40 @@ async function loadCarinaEmergencyCharts() {
 // ...existing code...
 
 // ...existing code...
-async function loadHenryPreparednessCharts() {
+async function loadKristinePreparednessCharts() {
   try {
-    const govHenryResponse = await fetch("jsonData/typhoonHenry_gov.json");
-    const govHenryData = await govHenryResponse.json();
+    const guidanceKristineResponse = await fetch("jsonData/typhoonKristine_guidance.json");
+    const guidanceKristineData = await guidanceKristineResponse.json();
 
-    const commHenryResponse = await fetch("jsonData/typhoonHenry_community.json");
-    const commHenryData = await commHenryResponse.json();
+    const actionKristineResponse = await fetch("jsonData/typhoonKristine_action.json");
+    const actionKristineData = await actionKristineResponse.json();
 
-    const allHenryPosts = [...(govHenryData || []), ...(commHenryData || [])];
-
-    const earlyWarningKeywords = ["prepare", "go-bag", "evacuation center", "secure home", "stay informed", "safety tips", "advisory", "maghanda", "ligtas", "paalala", "bulletin", "warning", "signal no."];
-    const resourceMobilizationKeywords = ["donation", "volunteer", "relief goods", "rescue boat", "need help", "looking for", "we need", "tulong", "donasyon", "suporta", "call for", "mobilize"];
+    // Data is now pre-categorized by the JSON files.
+    // earlyWarningPostsForTable will be guidanceKristineData
+    // resourceMobilizationPostsForTable will be actionKristineData
 
     let topEarlyWarningPost = null;
     let topResourcePost = null;
 
-    let earlyWarningPostsForTable = [];
-    let resourceMobilizationPostsForTable = [];
-
-    allHenryPosts.forEach(tweet => {
-      const textLower = (tweet.text || "").toLowerCase();
-      const likes = tweet.likes_count || 0;
-
-      const isEarlyWarning = earlyWarningKeywords.some(kw => textLower.includes(kw));
-      const isResourceMobilization = resourceMobilizationKeywords.some(kw => textLower.includes(kw));
-
-      if (isEarlyWarning) {
-        earlyWarningPostsForTable.push(tweet);
+    // Find the top early warning/guidance post from guidanceKristineData
+    if (guidanceKristineData && guidanceKristineData.length > 0) {
+      guidanceKristineData.forEach(tweet => {
+        const likes = tweet.likes_count || 0;
         if (!topEarlyWarningPost || likes > (topEarlyWarningPost.likes_count || 0)) {
           topEarlyWarningPost = tweet;
         }
-      } else if (isResourceMobilization) { // Only categorize as resource mobilization if not already early warning
-        resourceMobilizationPostsForTable.push(tweet);
+      });
+    }
+
+    // Find the top resource/action mobilization post from actionKristineData
+    if (actionKristineData && actionKristineData.length > 0) {
+      actionKristineData.forEach(tweet => {
+        const likes = tweet.likes_count || 0;
         if (!topResourcePost || likes > (topResourcePost.likes_count || 0)) {
           topResourcePost = tweet;
         }
-      }
-    });
+      });
+    }
 
     const topEarlyWarningStats = topEarlyWarningPost ? {
       likes: topEarlyWarningPost.likes_count || 0,
@@ -591,20 +587,20 @@ async function loadHenryPreparednessCharts() {
     } : { likes: 0, reposts: 0, replies: 0 };
 
     pieChart(
-      "preparedness1",
+      "preparedness1", // Assuming this canvas ID is generic for the first preparedness chart
       ["Likes", "Reposts", "Replies"],
       [topEarlyWarningStats.likes, topEarlyWarningStats.reposts, topEarlyWarningStats.replies],
-      "Top Early Warning & Guidance Post - Typhoon Henry"
+      "Top Early Warning & Guidance Post - Typhoon Kristine" // Updated Title
     );
 
     pieChart(
-      "preparedness2",
+      "preparedness2", // Assuming this canvas ID is generic for the second preparedness chart
       ["Likes", "Reposts", "Replies"],
       [topResourceStats.likes, topResourceStats.reposts, topResourceStats.replies],
-      "Top Resource & Action Mobilization Post - Typhoon Henry"
+      "Top Resource & Action Mobilization Post - Typhoon Kristine" // Updated Title
     );
 
-    const tableConfigHenry = {
+    const tableConfigKristine = { // Renamed table config variable
       pageLength: 5,
       lengthMenu: [5, 10, 25, 50],
       responsive: true,
@@ -624,14 +620,15 @@ async function loadHenryPreparednessCharts() {
       ],
     };
 
-    // Populate and initialize Henry Early Warning & Guidance table
-    if ($.fn.DataTable.isDataTable('#henryEarlyWarningTable')) {
-        $('#henryEarlyWarningTable').DataTable().destroy();
+    // Populate and initialize Kristine Early Warning & Guidance table
+    // Uses guidanceKristineData directly
+    if ($.fn.DataTable.isDataTable('#kristineEarlyWarningTable')) {
+        $('#kristineEarlyWarningTable').DataTable().destroy();
     }
-    const henryEarlyWarningTable = $("#henryEarlyWarningTable").DataTable(tableConfigHenry);
-    if (earlyWarningPostsForTable.length > 0) {
-        earlyWarningPostsForTable.forEach((tweet) => {
-            henryEarlyWarningTable.row.add([
+    const kristineEarlyWarningTable = $("#kristineEarlyWarningTable").DataTable(tableConfigKristine);
+    if (guidanceKristineData && guidanceKristineData.length > 0) {
+        guidanceKristineData.forEach((tweet) => {
+            kristineEarlyWarningTable.row.add([
                 tweet.user_name || "N/A",
                 tweet.text || "N/A",
                 tweet.created_at ? new Date(tweet.created_at).toLocaleString() : "N/A",
@@ -640,19 +637,20 @@ async function loadHenryPreparednessCharts() {
                 tweet.reposts_count || 0,
             ]);
         });
-        henryEarlyWarningTable.draw();
+        kristineEarlyWarningTable.draw();
     } else {
-        henryEarlyWarningTable.clear().draw();
+        kristineEarlyWarningTable.clear().draw();
     }
 
-    // Populate and initialize Henry Resource & Action Mobilization table
-    if ($.fn.DataTable.isDataTable('#henryResourceMobilizationTable')) {
-        $('#henryResourceMobilizationTable').DataTable().destroy();
+    // Populate and initialize Kristine Resource & Action Mobilization table
+    // Uses actionKristineData directly
+    if ($.fn.DataTable.isDataTable('#kristineResourceMobilizationTable')) {
+        $('#kristineResourceMobilizationTable').DataTable().destroy();
     }
-    const henryResourceMobilizationTable = $("#henryResourceMobilizationTable").DataTable(tableConfigHenry);
-    if (resourceMobilizationPostsForTable.length > 0) {
-        resourceMobilizationPostsForTable.forEach((tweet) => {
-            henryResourceMobilizationTable.row.add([
+    const kristineResourceMobilizationTable = $("#kristineResourceMobilizationTable").DataTable(tableConfigKristine);
+    if (actionKristineData && actionKristineData.length > 0) {
+        actionKristineData.forEach((tweet) => {
+            kristineResourceMobilizationTable.row.add([
                 tweet.user_name || "N/A",
                 tweet.text || "N/A",
                 tweet.created_at ? new Date(tweet.created_at).toLocaleString() : "N/A",
@@ -661,18 +659,17 @@ async function loadHenryPreparednessCharts() {
                 tweet.reposts_count || 0,
             ]);
         });
-        henryResourceMobilizationTable.draw();
+        kristineResourceMobilizationTable.draw();
     } else {
-        henryResourceMobilizationTable.clear().draw();
+        kristineResourceMobilizationTable.clear().draw();
     }
 
   } catch (error) {
-    console.error("Error loading Typhoon Henry preparedness charts or tables:", error);
+    console.error("Error loading Typhoon Kristine preparedness charts or tables:", error); // Updated error message
   }
 }
 // ...existing code...
 
 document.addEventListener("DOMContentLoaded", loadCarinaEmergencyCharts);
-document.addEventListener("DOMContentLoaded", loadHenryPreparednessCharts); // Added call for Henry charts
-document.addEventListener("DOMContentLoaded", loadChartData);
+document.addEventListener("DOMContentLoaded", loadKristinePreparednessCharts);document.addEventListener("DOMContentLoaded", loadChartData);
 document.addEventListener("DOMContentLoaded", loadRawData);
