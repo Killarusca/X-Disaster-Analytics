@@ -89,11 +89,11 @@ async def main():
             tweet_count_action += 1
 
         # Save categorized preparedness tweets
-    with open('jsonData/typhoonKristine_guidance.json', 'w', encoding='utf-8') as f_guidance:
+    with open('jsonData/typhoonKristine_comm.json', 'w', encoding='utf-8') as f_guidance:
         json.dump(guidance_tweets, f_guidance, ensure_ascii=False, indent=4)
         print(f"Saved guidance preparedness tweets to jsonData/typhoonKristine_guidance.json")
 
-    with open('jsonData/typhoonKristine_action.json', 'w', encoding='utf-8') as f_action:
+    with open('jsonData/typhoonKristine_gov.json', 'w', encoding='utf-8') as f_action:
         json.dump(action_tweets, f_action, ensure_ascii=False, indent=4)
         print(f"Saved action preparedness tweets to jsonData/typhoonKristine_action.json")
 
