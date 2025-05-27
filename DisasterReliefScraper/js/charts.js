@@ -102,6 +102,106 @@ window.onload = () => {
   //   pieChart("preparedness2", ["Posts", "Likes"], [40, 35], "Preparedness Post 2");
 };
 
+async function loadCommunityDataToTable() {
+  try {
+    const response = await fetch("jsonData/typhoonHenry_community.json");
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch community data");
+    }
+
+    const data = await response.json();
+    const tableBody = document.querySelector("#communityTable tbody");
+
+    // Clear table body
+    tableBody.innerHTML = "";
+
+    data.forEach((item, index) => {
+      const row = `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${item.text}</td>
+          <td>${item.created_at}</td>
+          <td>${item.likes_count}</td>
+          <td>${item.replies_count}</td>
+          <td>${item.reposts_count}</td>
+        </tr>
+      `;
+      tableBody.insertAdjacentHTML("beforeend", row);
+    });
+
+    // Destroy and reinitialize DataTable
+    if ($.fn.DataTable.isDataTable("#communityTable")) {
+      $("#communityTable").DataTable().clear().destroy();
+    }
+
+    $("#communityTable").DataTable({
+      responsive: true,
+      pageLength: 5,
+      lengthChange: false,
+    });
+  } catch (error) {
+    console.error("Error loading community data:", error);
+  }
+}
+
+// Optional: Run on page load
+document.addEventListener("DOMContentLoaded", loadCommunityDataToTable);
+
+// Or load on accordion open:
+// document.getElementById("collapseCommunity")
+//   .addEventListener("show.bs.collapse", loadCommunityDataToTable);
+
+async function loadGovDataToTable() {
+  try {
+    const response = await fetch("jsonData/typhoonHenry_gov.json");
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch government data");
+    }
+
+    const data = await response.json();
+    const tableBody = document.querySelector("#govTable tbody");
+
+    // Clear previous table body content
+    tableBody.innerHTML = "";
+
+    data.forEach((item) => {
+      const row = `
+        <tr>
+          <td>${item.tweet_count + 1}</td>
+          <td>${item.text}</td>
+          <td>${item.created_at}</td>
+          <td>${item.likes_count}</td>
+          <td>${item.replies_count}</td>
+          <td>${item.reposts_count}</td>
+        </tr>
+      `;
+      tableBody.insertAdjacentHTML("beforeend", row);
+    });
+
+    // Destroy and reinitialize DataTable
+    if ($.fn.DataTable.isDataTable("#govTable")) {
+      $("#govTable").DataTable().clear().destroy();
+    }
+
+    $("#govTable").DataTable({
+      responsive: true,
+      pageLength: 5,
+      lengthChange: false,
+    });
+  } catch (error) {
+    console.error("Error loading government data:", error);
+  }
+}
+
+// Optional: Load on accordion open
+// document.getElementById("collapseGov")
+//   .addEventListener("show.bs.collapse", loadGovDataToTable);
+
+// Or run on page load
+document.addEventListener("DOMContentLoaded", loadGovDataToTable);
+
 const calculateTotals = (data) => {
   let totalLikes = 0,
     totalReposts = 0,
@@ -406,12 +506,29 @@ async function loadCarinaEmergencyCharts() {
     // Load community data
     const commResponse = await fetch("jsonData/typhooncarina_community.json");
     if (!commResponse.ok) {
-        throw new Error(`HTTP error! Status: ${commResponse.status} for typhooncarina_community.json`);
+      throw new Error(
+        `HTTP error! Status: ${commResponse.status} for typhooncarina_community.json`
+      );
     }
     const commData = await commResponse.json();
 
-    const pleaKeywords = ["rescueph", "need rescue", "stuck", "trapped", "help please", "urgent help"];
-    const orgInfoAidKeywords = ["donation drive", "hotline", "emergency contact", "relief operation", "call for donations", "safety advisory", "emergency hotlines"];
+    const pleaKeywords = [
+      "rescueph",
+      "need rescue",
+      "stuck",
+      "trapped",
+      "help please",
+      "urgent help",
+    ];
+    const orgInfoAidKeywords = [
+      "donation drive",
+      "hotline",
+      "emergency contact",
+      "relief operation",
+      "call for donations",
+      "safety advisory",
+      "emergency hotlines",
+    ];
 
     let topPleaPostStats = { likes: 0, reposts: 0, replies: 0 };
     let pleaPostsData = [];
@@ -419,10 +536,14 @@ async function loadCarinaEmergencyCharts() {
     let orgInfoAidPostsData = [];
 
     if (commData && commData.length > 0) {
-      commData.forEach(tweet => {
+      commData.forEach((tweet) => {
         const tweetTextLower = tweet.text ? tweet.text.toLowerCase() : "";
-        let isPlea = pleaKeywords.some(keyword => tweetTextLower.includes(keyword));
-        let isOrgInfoAid = orgInfoAidKeywords.some(keyword => tweetTextLower.includes(keyword));
+        let isPlea = pleaKeywords.some((keyword) =>
+          tweetTextLower.includes(keyword)
+        );
+        let isOrgInfoAid = orgInfoAidKeywords.some((keyword) =>
+          tweetTextLower.includes(keyword)
+        );
 
         if (isPlea) {
           pleaPostsData.push(tweet);
@@ -433,7 +554,8 @@ async function loadCarinaEmergencyCharts() {
               replies: tweet.replies_count || 0,
             };
           }
-        } else if (isOrgInfoAid) { // Categorize as org/info/aid if not primarily a plea
+        } else if (isOrgInfoAid) {
+          // Categorize as org/info/aid if not primarily a plea
           orgInfoAidPostsData.push(tweet);
           if ((tweet.likes_count || 0) > topOrgInfoAidPostStats.likes) {
             topOrgInfoAidPostStats = {
@@ -448,7 +570,7 @@ async function loadCarinaEmergencyCharts() {
 
     // Create Chart for Top Urgent Plea/Rescue Call
     doughnutChart(
-      "earthquakeRelief1", 
+      "earthquakeRelief1",
       ["Likes", "Reposts", "Replies"],
       [
         topPleaPostStats.likes,
@@ -460,7 +582,7 @@ async function loadCarinaEmergencyCharts() {
 
     // Create Chart for Top Organized Community Info/Aid Post
     doughnutChart(
-      "earthquakeRelief2", 
+      "earthquakeRelief2",
       ["Likes", "Reposts", "Replies"],
       [
         topOrgInfoAidPostStats.likes,
@@ -491,47 +613,54 @@ async function loadCarinaEmergencyCharts() {
     };
 
     // Populate and initialize Carina Urgent Pleas table (formerly gov table)
-    if ($.fn.DataTable.isDataTable('#carinaPleaTable')) { // Ensure HTML ID is updated
-        $('#carinaPleaTable').DataTable().destroy();
+    if ($.fn.DataTable.isDataTable("#carinaPleaTable")) {
+      // Ensure HTML ID is updated
+      $("#carinaPleaTable").DataTable().destroy();
     }
     const carinaPleaTable = $("#carinaPleaTable").DataTable(tableConfigCarina);
     if (pleaPostsData.length > 0) {
-        pleaPostsData.forEach((tweet) => {
-            carinaPleaTable.row.add([
-                tweet.user_name || "N/A",
-                tweet.text || "N/A",
-                tweet.created_at ? new Date(tweet.created_at).toLocaleString() : "N/A",
-                tweet.likes_count || 0,
-                tweet.replies_count || 0,
-                tweet.reposts_count || 0,
-            ]);
-        });
-        carinaPleaTable.draw();
+      pleaPostsData.forEach((tweet) => {
+        carinaPleaTable.row.add([
+          tweet.user_name || "N/A",
+          tweet.text || "N/A",
+          tweet.created_at
+            ? new Date(tweet.created_at).toLocaleString()
+            : "N/A",
+          tweet.likes_count || 0,
+          tweet.replies_count || 0,
+          tweet.reposts_count || 0,
+        ]);
+      });
+      carinaPleaTable.draw();
     } else {
-        carinaPleaTable.clear().draw();
+      carinaPleaTable.clear().draw();
     }
 
     // Populate and initialize Carina Organized Info/Aid table (formerly community table)
-    if ($.fn.DataTable.isDataTable('#carinaOrgInfoAidTable')) { // Ensure HTML ID is updated
-        $('#carinaOrgInfoAidTable').DataTable().destroy();
+    if ($.fn.DataTable.isDataTable("#carinaOrgInfoAidTable")) {
+      // Ensure HTML ID is updated
+      $("#carinaOrgInfoAidTable").DataTable().destroy();
     }
-    const carinaOrgInfoAidTable = $("#carinaOrgInfoAidTable").DataTable(tableConfigCarina);
+    const carinaOrgInfoAidTable = $("#carinaOrgInfoAidTable").DataTable(
+      tableConfigCarina
+    );
     if (orgInfoAidPostsData.length > 0) {
-        orgInfoAidPostsData.forEach((tweet) => {
-            carinaOrgInfoAidTable.row.add([
-                tweet.user_name || "N/A",
-                tweet.text || "N/A",
-                tweet.created_at ? new Date(tweet.created_at).toLocaleString() : "N/A",
-                tweet.likes_count || 0,
-                tweet.replies_count || 0,
-                tweet.reposts_count || 0,
-            ]);
-        });
-        carinaOrgInfoAidTable.draw();
+      orgInfoAidPostsData.forEach((tweet) => {
+        carinaOrgInfoAidTable.row.add([
+          tweet.user_name || "N/A",
+          tweet.text || "N/A",
+          tweet.created_at
+            ? new Date(tweet.created_at).toLocaleString()
+            : "N/A",
+          tweet.likes_count || 0,
+          tweet.replies_count || 0,
+          tweet.reposts_count || 0,
+        ]);
+      });
+      carinaOrgInfoAidTable.draw();
     } else {
-        carinaOrgInfoAidTable.clear().draw();
+      carinaOrgInfoAidTable.clear().draw();
     }
-
   } catch (error) {
     console.error("Error loading Carina emergency charts or tables:", error);
   }
@@ -541,10 +670,14 @@ async function loadCarinaEmergencyCharts() {
 // ...existing code...
 async function loadKristinePreparednessCharts() {
   try {
-    const guidanceKristineResponse = await fetch("jsonData/typhoonKristine_guidance.json");
+    const guidanceKristineResponse = await fetch(
+      "jsonData/typhoonKristine_guidance.json"
+    );
     const guidanceKristineData = await guidanceKristineResponse.json();
 
-    const actionKristineResponse = await fetch("jsonData/typhoonKristine_action.json");
+    const actionKristineResponse = await fetch(
+      "jsonData/typhoonKristine_action.json"
+    );
     const actionKristineData = await actionKristineResponse.json();
 
     // Data is now pre-categorized by the JSON files.
@@ -556,9 +689,12 @@ async function loadKristinePreparednessCharts() {
 
     // Find the top early warning/guidance post from guidanceKristineData
     if (guidanceKristineData && guidanceKristineData.length > 0) {
-      guidanceKristineData.forEach(tweet => {
+      guidanceKristineData.forEach((tweet) => {
         const likes = tweet.likes_count || 0;
-        if (!topEarlyWarningPost || likes > (topEarlyWarningPost.likes_count || 0)) {
+        if (
+          !topEarlyWarningPost ||
+          likes > (topEarlyWarningPost.likes_count || 0)
+        ) {
           topEarlyWarningPost = tweet;
         }
       });
@@ -566,7 +702,7 @@ async function loadKristinePreparednessCharts() {
 
     // Find the top resource/action mobilization post from actionKristineData
     if (actionKristineData && actionKristineData.length > 0) {
-      actionKristineData.forEach(tweet => {
+      actionKristineData.forEach((tweet) => {
         const likes = tweet.likes_count || 0;
         if (!topResourcePost || likes > (topResourcePost.likes_count || 0)) {
           topResourcePost = tweet;
@@ -574,33 +710,46 @@ async function loadKristinePreparednessCharts() {
       });
     }
 
-    const topEarlyWarningStats = topEarlyWarningPost ? {
-      likes: topEarlyWarningPost.likes_count || 0,
-      reposts: topEarlyWarningPost.reposts_count || 0,
-      replies: topEarlyWarningPost.replies_count || 0,
-    } : { likes: 0, reposts: 0, replies: 0 };
+    const topEarlyWarningStats = topEarlyWarningPost
+      ? {
+          likes: topEarlyWarningPost.likes_count || 0,
+          reposts: topEarlyWarningPost.reposts_count || 0,
+          replies: topEarlyWarningPost.replies_count || 0,
+        }
+      : { likes: 0, reposts: 0, replies: 0 };
 
-    const topResourceStats = topResourcePost ? {
-      likes: topResourcePost.likes_count || 0,
-      reposts: topResourcePost.reposts_count || 0,
-      replies: topResourcePost.replies_count || 0,
-    } : { likes: 0, reposts: 0, replies: 0 };
+    const topResourceStats = topResourcePost
+      ? {
+          likes: topResourcePost.likes_count || 0,
+          reposts: topResourcePost.reposts_count || 0,
+          replies: topResourcePost.replies_count || 0,
+        }
+      : { likes: 0, reposts: 0, replies: 0 };
 
     pieChart(
       "preparedness1", // Assuming this canvas ID is generic for the first preparedness chart
       ["Likes", "Reposts", "Replies"],
-      [topEarlyWarningStats.likes, topEarlyWarningStats.reposts, topEarlyWarningStats.replies],
+      [
+        topEarlyWarningStats.likes,
+        topEarlyWarningStats.reposts,
+        topEarlyWarningStats.replies,
+      ],
       "Top Early Warning & Guidance Post - Typhoon Kristine" // Updated Title
     );
 
     pieChart(
       "preparedness2", // Assuming this canvas ID is generic for the second preparedness chart
       ["Likes", "Reposts", "Replies"],
-      [topResourceStats.likes, topResourceStats.reposts, topResourceStats.replies],
+      [
+        topResourceStats.likes,
+        topResourceStats.reposts,
+        topResourceStats.replies,
+      ],
       "Top Resource & Action Mobilization Post - Typhoon Kristine" // Updated Title
     );
 
-    const tableConfigKristine = { // Renamed table config variable
+    const tableConfigKristine = {
+      // Renamed table config variable
       pageLength: 5,
       lengthMenu: [5, 10, 25, 50],
       responsive: true,
@@ -622,54 +771,65 @@ async function loadKristinePreparednessCharts() {
 
     // Populate and initialize Kristine Early Warning & Guidance table
     // Uses guidanceKristineData directly
-    if ($.fn.DataTable.isDataTable('#kristineEarlyWarningTable')) {
-        $('#kristineEarlyWarningTable').DataTable().destroy();
+    if ($.fn.DataTable.isDataTable("#kristineEarlyWarningTable")) {
+      $("#kristineEarlyWarningTable").DataTable().destroy();
     }
-    const kristineEarlyWarningTable = $("#kristineEarlyWarningTable").DataTable(tableConfigKristine);
+    const kristineEarlyWarningTable = $("#kristineEarlyWarningTable").DataTable(
+      tableConfigKristine
+    );
     if (guidanceKristineData && guidanceKristineData.length > 0) {
-        guidanceKristineData.forEach((tweet) => {
-            kristineEarlyWarningTable.row.add([
-                tweet.user_name || "N/A",
-                tweet.text || "N/A",
-                tweet.created_at ? new Date(tweet.created_at).toLocaleString() : "N/A",
-                tweet.likes_count || 0,
-                tweet.replies_count || 0,
-                tweet.reposts_count || 0,
-            ]);
-        });
-        kristineEarlyWarningTable.draw();
+      guidanceKristineData.forEach((tweet) => {
+        kristineEarlyWarningTable.row.add([
+          tweet.user_name || "N/A",
+          tweet.text || "N/A",
+          tweet.created_at
+            ? new Date(tweet.created_at).toLocaleString()
+            : "N/A",
+          tweet.likes_count || 0,
+          tweet.replies_count || 0,
+          tweet.reposts_count || 0,
+        ]);
+      });
+      kristineEarlyWarningTable.draw();
     } else {
-        kristineEarlyWarningTable.clear().draw();
+      kristineEarlyWarningTable.clear().draw();
     }
 
     // Populate and initialize Kristine Resource & Action Mobilization table
     // Uses actionKristineData directly
-    if ($.fn.DataTable.isDataTable('#kristineResourceMobilizationTable')) {
-        $('#kristineResourceMobilizationTable').DataTable().destroy();
+    if ($.fn.DataTable.isDataTable("#kristineResourceMobilizationTable")) {
+      $("#kristineResourceMobilizationTable").DataTable().destroy();
     }
-    const kristineResourceMobilizationTable = $("#kristineResourceMobilizationTable").DataTable(tableConfigKristine);
+    const kristineResourceMobilizationTable = $(
+      "#kristineResourceMobilizationTable"
+    ).DataTable(tableConfigKristine);
     if (actionKristineData && actionKristineData.length > 0) {
-        actionKristineData.forEach((tweet) => {
-            kristineResourceMobilizationTable.row.add([
-                tweet.user_name || "N/A",
-                tweet.text || "N/A",
-                tweet.created_at ? new Date(tweet.created_at).toLocaleString() : "N/A",
-                tweet.likes_count || 0,
-                tweet.replies_count || 0,
-                tweet.reposts_count || 0,
-            ]);
-        });
-        kristineResourceMobilizationTable.draw();
+      actionKristineData.forEach((tweet) => {
+        kristineResourceMobilizationTable.row.add([
+          tweet.user_name || "N/A",
+          tweet.text || "N/A",
+          tweet.created_at
+            ? new Date(tweet.created_at).toLocaleString()
+            : "N/A",
+          tweet.likes_count || 0,
+          tweet.replies_count || 0,
+          tweet.reposts_count || 0,
+        ]);
+      });
+      kristineResourceMobilizationTable.draw();
     } else {
-        kristineResourceMobilizationTable.clear().draw();
+      kristineResourceMobilizationTable.clear().draw();
     }
-
   } catch (error) {
-    console.error("Error loading Typhoon Kristine preparedness charts or tables:", error); // Updated error message
+    console.error(
+      "Error loading Typhoon Kristine preparedness charts or tables:",
+      error
+    ); // Updated error message
   }
 }
 // ...existing code...
 
 document.addEventListener("DOMContentLoaded", loadCarinaEmergencyCharts);
-document.addEventListener("DOMContentLoaded", loadKristinePreparednessCharts);document.addEventListener("DOMContentLoaded", loadChartData);
+document.addEventListener("DOMContentLoaded", loadKristinePreparednessCharts);
+document.addEventListener("DOMContentLoaded", loadChartData);
 document.addEventListener("DOMContentLoaded", loadRawData);
